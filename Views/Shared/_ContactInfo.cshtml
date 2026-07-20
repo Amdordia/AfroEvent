@@ -1,0 +1,148 @@
+<div class="container py-5">
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-md-10 col-lg-7">
+
+            <div class="card border-0 shadow-lg rounded-4">
+
+                <!-- Header -->
+                <div class="card-header bg-black text-center py-4 rounded-top-4 border-0">
+
+                    <i class="bi bi-headset display-5"></i>
+
+                    <h3 class="fw-bold mt-2 mb-1 text-warning">
+                        Contactez AfroEvent
+                    </h3>
+
+                    <p class="mb-0 text-white">
+                        Une question concernant AfroEvent ? Notre équipe est disponible pour répondre à toutes vos questions.
+                    </p>
+
+                </div>
+
+                <div class="card-body p-5 text-start">
+
+                    <!-- Coordonnées -->
+                    @{
+                        if (ViewBag.Email != null || ViewData["Telephone"] != null)
+                        {
+                            <div class="row mb-5">
+
+                                <div class="col-md-6 mb-4">
+
+                                    <div class="d-flex">
+
+                                        <div class="bg-warning rounded-circle p-3 me-3">
+
+                                            <i class="bi bi-envelope-fill text-white fs-5"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small class="text-muted">
+                                                Adresse Email
+                                            </small>
+
+                                            <h6 class="fw-bold mb-0">
+                                                @ViewBag.Email
+                                            </h6>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="d-flex">
+
+                                        <div class="bg-warning rounded-circle p-3 me-3">
+
+                                            <i class="bi bi-telephone-fill text-white fs-5"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small class="text-muted">
+                                                Téléphone
+                                            </small>
+
+                                            <h6 class="fw-bold mb-0">
+                                                @ViewData["Telephone"]
+                                            </h6>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <hr class="mb-2">
+                        }
+                    }
+
+
+
+
+                    <!-- Formulaire -->
+
+                    <form>
+
+                        <div class="mb-3">
+
+                            <label class="text-start form-label fw-semibold">
+                                Votre nom
+                            </label>
+
+                            <input type="text"
+                                   class="form-control rounded-3"
+                                   placeholder="Votre nom complet">
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="text-start form-label fw-semibold">
+                                Votre adresse email
+                            </label>
+
+                            <input type="email"
+                                   class="form-control rounded-3"
+                                   placeholder="exemple@email.com">
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="text-start form-label fw-semibold">
+                                Votre message
+                            </label>
+
+                            <textarea class="form-control rounded-3"
+                                      rows="6"
+                                      placeholder="Écrivez votre message ici..."></textarea>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn bg-warning text-dark fw-bold rounded-pill w-100 py-2">
+
+                            <i class="bi bi-send-fill me-2"></i>
+
+                            Envoyer le message
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

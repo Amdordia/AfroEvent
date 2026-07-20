@@ -11,6 +11,13 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Contact()
+    {
+        ViewBag.Email = "support@afroevent.ml";
+        ViewData["Telephone"] = "+223 00 00 00 00";
+        return View();
+    }
+
     public IActionResult Privacy()
     {
         return View();
