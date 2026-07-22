@@ -1,0 +1,124 @@
+@model AfroEvent.ViewModels.ConferenceInscriptionViewModel
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-warning text-dark text-center py-4 rounded-top-4">
+
+                    <h3 class="fw-bold mb-1">
+                        <i class="bi bi-ticket-perforated-fill me-2"></i>
+                        Inscription à la conférence
+                    </h3>
+
+                    <p class="mb-0">
+                        Remplissez le formulaire ci-dessous pour réserver votre place.
+                    </p>
+
+                </div>
+
+                <div class="card-body p-5">
+
+                    <form asp-action="SInscrire" method="post">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="NomComplet" class="form-label fw-semibold"></label>
+
+                            <input asp-for="NomComplet"
+                                   class="form-control rounded-3"
+                                   placeholder="Ex : Moussa Traoré" />
+
+                            <span asp-validation-for="NomComplet" class="text-danger"></span>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="Email" class="form-label fw-semibold"></label>
+
+                            <input asp-for="Email"
+                                   class="form-control rounded-3"
+                                   placeholder="exemple@email.com" />
+
+                            <span asp-validation-for="Email" class="text-danger"></span>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="TypePass" class="form-label fw-semibold"></label>
+
+                            <select asp-for="TypePass" class="form-select rounded-3">
+
+                                <option value="">-- Choisir un type de pass --</option>
+
+                                <option value="Etudiant">Etudiant</option>
+
+                                <option value="Professionnel">Professionnel</option>
+
+                                <option value="VIP">VIP</option>
+
+                            </select>
+
+                            <span asp-validation-for="TypePass" class="text-danger"></span>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label asp-for="NombrePlaces" class="form-label fw-semibold"></label>
+
+                            <input asp-for="NombrePlaces"
+                                   class="form-control rounded-3"/>
+
+                            <span asp-validation-for="NombrePlaces" class="text-danger"></span>
+
+                        </div>
+
+                        <div class="form-check mb-4">
+
+                            <input asp-for="AccepteConditions"
+                                   class="form-check-input" />
+
+                            <label asp-for="AccepteConditions"
+                                   class="form-check-label">
+                            </label>
+
+                            <br />
+
+                            <span asp-validation-for="AccepteConditions"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <button type="submit"
+                                class="btn bg-warning text-dark fw-bold rounded-pill w-100 py-2">
+
+                            <i class="bi bi-check-circle-fill me-2"></i>
+
+                            Valider mon inscription
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

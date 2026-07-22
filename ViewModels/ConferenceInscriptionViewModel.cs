@@ -15,6 +15,7 @@ namespace AfroEvent.ViewModels
         public string Email { get; set; } = string.Empty;
 
         [Display(Name = "Type de pass")]
+        [Required(ErrorMessage = "Le type de pass est obligatoire.")]
         public string TypePass { get; set; } = string.Empty;
 
         [Display(Name = "Nombre de places")]
@@ -22,7 +23,16 @@ namespace AfroEvent.ViewModels
         public int NombrePlaces { get; set; }
 
         [Display(Name = "J'accepte les conditions")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "Vous devez accepter les conditions")]
+        // [Range(typeof(bool), "true", "true", ErrorMessage = "Vous devez accepter les conditions")]
+        [MustBeTrue(ErrorMessage = "Vous devez accepter les conditions.")]
         public bool AccepteConditions { get; set; }
+    }
+
+    public class MustBeTrueAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object? value)
+        {
+            return value is bool b && b;
+        }
     }
 }
