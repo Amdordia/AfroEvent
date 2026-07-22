@@ -7,7 +7,7 @@
     <h2>Soumission de Sujet de Projet M1</h2>
     <hr />
 
-    @if (TempData["SuccesMessage"] != null)
+    @if (TempData[key: "SuccesMessage"] != null)
     {
         <div class="alert alert-success">
             @TempData["SuccesMessage"]
