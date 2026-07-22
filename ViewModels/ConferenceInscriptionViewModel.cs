@@ -1,0 +1,28 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace AfroEvent.ViewModels
+{
+    public class ConferenceInscriptionViewModel
+    {
+        [Display(Name = "Nom complet")]
+        [Required(ErrorMessage = "Le nom complet est obligatoire.")]
+        [MinLength(3, ErrorMessage = "Le nom complet doit contenir au moins 3 caractères.")]
+        public string NomComplet { get; set; } = string.Empty;
+
+        [Display(Name = "Adresse e-mail")]
+        [Required(ErrorMessage = "L'e-mail est obligatoire.")]
+        [EmailAddress(ErrorMessage = "Le format de l'e-mail est invalide.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Display(Name = "Type de pass")]
+        public string TypePass { get; set; } = string.Empty;
+
+        [Display(Name = "Nombre de places")]
+        [Range(1, 5, ErrorMessage = "Le nombre de places doit être compris entre 1 et 5.")]
+        public int NombrePlaces { get; set; }
+
+        [Display(Name = "J'accepte les conditions")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Vous devez accepter les conditions")]
+        public bool AccepteConditions { get; set; }
+    }
+}
