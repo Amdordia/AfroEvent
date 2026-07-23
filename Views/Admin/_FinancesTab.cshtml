@@ -1,0 +1,72 @@
+@model AfroEvent.ViewModels.AdminDashboardViewModel
+
+<div class="card border-0 shadow-sm rounded-4" style="background: white;">
+    <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <span class="p-2 rounded-3 text-warning d-flex align-items-center justify-content-center" style="background-color: rgba(255, 184, 0, 0.15); width: 38px; height: 38px;">
+                <i class="bi bi-cash-coin fs-5"></i>
+            </span>
+            <h5 class="fw-bold mb-0 text-dark">Statistiques Financières & Billets</h5>
+        </div>
+        <span class="badge bg-warning bg-opacity-20 text-warning-emphasis px-3 py-2 rounded-pill fw-bold">Données Simulées</span>
+    </div>
+    <div class="card-body p-4">
+        <div class="row g-4 mb-4">
+
+            <div class="col-12 col-md-6">
+                <div class="p-4 rounded-4 border border-light shadow-sm h-100" style="background-color: #fafbfc;">
+                    <div class="d-flex align-items-center gap-2 mb-2 text-muted fw-semibold small">
+                        <i class="bi bi-wallet2 text-warning fs-5"></i>
+                        <span>TOTAL ENCAISSÉ</span>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-2">@Model.TotalRevenusSimules.ToString("N0") <span class="fs-5 text-muted fw-normal">FCFA</span></h2>
+                    <small class="text-secondary d-block mt-2">Volume cumulé des ventes de tickets payants sur la plateforme.</small>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="p-4 rounded-4 border border-light shadow-sm h-100" style="background-color: #fafbfc;">
+                    <div class="d-flex align-items-center gap-2 mb-2 text-muted fw-semibold small">
+                        <i class="bi bi-ticket-detailed text-info fs-5"></i>
+                        <span>BILLETS ÉMIS</span>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-2">@Model.TotalBilletsVendus.ToString("N0") <span class="fs-5 text-muted fw-normal">Tickets</span></h2>
+                    <small class="text-secondary d-block mt-2">Nombre d'inscriptions et de billets électroniques munis de QR codes sécurisés.</small>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="fw-bold text-dark mb-3 mt-4"><i class="bi bi-bar-chart-steps me-2 text-warning"></i>Détails analytiques par catégorie d'événement</h6>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 border">
+                <thead class="table-light text-secondary text-uppercase fw-semibold" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-3 py-3">Catégorie</th>
+                        <th class="py-3">Billets vendus</th>
+                        <th class="py-3">Revenus cumulés</th>
+                        <th class="text-end pe-3 py-3">Pourcentage</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 0.85rem;">
+                    @foreach (var cat in Model.RevenusParCategorie)
+                    {
+                        <tr>
+                            <td class="ps-3 py-3 fw-bold text-dark">
+                                <i class="bi bi-tag-fill text-muted me-2"></i>@cat.Categorie
+                            </td>
+                            <td class="py-3 text-dark fw-medium">
+                                @cat.NombreBillets.ToString("N0") <span class="text-muted fw-normal">unités</span>
+                            </td>
+                            <td class="py-3 text-dark fw-bold">
+                                @cat.Montant.ToString("N0") <span class="text-muted fw-normal fs-7">FCFA</span>
+                            </td>
+                            <td class="text-end pe-3 py-3">
+                                <span class="badge bg-warning bg-opacity-20 text-warning-emphasis px-3 py-1 rounded-pill fw-bold">@cat.Pourcentage.ToString("N1")%</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -80,6 +80,17 @@
                             <a class="nav-link text-light px-3" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Accueil</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-light" href="#">Parcourir les événements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" asp-area="" asp-controller="Admin" asp-action="Dashboard">
+                                <i class="bi bi-shield-lock-fill me-1"></i> Dashboard Admin
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" href="#">Espace Organisateur</a>
                             <a class="nav-link text-light px-3" asp-controller="Events" asp-action="Index"><i class="bi bi-calendar-event me-1"></i>Événements</a>
                         </li>
                     </ul>
