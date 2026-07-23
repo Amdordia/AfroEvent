@@ -1,0 +1,92 @@
+@model AfroEvent.ViewModels.EventFormViewModel
+@{
+    ViewData["Title"] = "Modifier l'Événement";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-1"><i class="bi bi-pencil-square text-warning me-2"></i>Modifier l'Événement</h2>
+                <p class="text-muted mb-0">Édition de : <strong class="text-dark">@Model.Title</strong></p>
+            </div>
+            <a asp-controller="Organizer" asp-action="Events" class="btn btn-outline-secondary">Retour</a>
+        </div>
+
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
+                <h4 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Informations Générales</h4>
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-semibold"></label>
+                    <input asp-for="Title" class="form-control form-control-lg" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="CategoryId" class="form-label fw-semibold"></label>
+                        <select asp-for="CategoryId" class="form-select">
+                            <option value="1" selected="@(Model.CategoryId == 1)">Hackathon</option>
+                            <option value="2" selected="@(Model.CategoryId == 2)">Bootcamp</option>
+                            <option value="3" selected="@(Model.CategoryId == 3)">Conférence</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CoverImageUrl" class="form-label fw-semibold"></label>
+                        <input asp-for="CoverImageUrl" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <hr class="my-4">
+
+                <h4 class="fw-bold text-dark mb-3"><i class="bi bi-geo-alt text-danger me-2"></i>Date & Localisation</h4>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="StartDate" class="form-label fw-semibold"></label>
+                        <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="EndDate" class="form-label fw-semibold"></label>
+                        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LocationAddress" class="form-label fw-semibold"></label>
+                    <input asp-for="LocationAddress" class="form-control" />
+                </div>
+
+                <hr class="my-4">
+
+                <h4 class="fw-bold text-dark mb-3"><i class="bi bi-ticket-perforated text-warning me-2"></i>Billetterie & Capacité</h4>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="Price" class="form-label fw-semibold"></label>
+                        <div class="input-group">
+                            <input asp-for="Price" class="form-control" type="number" />
+                            <span class="input-group-text fw-bold">FCFA</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MaxCapacity" class="form-label fw-semibold"></label>
+                        <input asp-for="MaxCapacity" class="form-control" type="number" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-controller="Organizer" asp-action="Events" class="btn btn-outline-secondary px-4">Annuler</a>
+                    <button type="submit" class="btn btn-warning fw-bold px-4"><i class="bi bi-save me-1"></i> Enregistrer les modifications</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

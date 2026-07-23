@@ -1,0 +1,251 @@
+@model AfroEvent.ViewModels.OrganizerDashboardViewModel
+@{
+    ViewData["Title"] = "Tableau de Bord Organisateur";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="bi bi-speedometer2 text-warning me-2"></i>Tableau de Bord Organisateur
+        </h2>
+        <p class="text-muted mb-0">Bienvenue, <strong class="text-dark">@Model.OrganizerName</strong>. Suivez les performances de vos événements en temps réel.</p>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex gap-2">
+        <a asp-controller="Events" asp-action="Create" class="btn btn-afro shadow-sm">
+            <i class="bi bi-plus-circle-fill me-1"></i> Créer un événement
+        </a>
+        <a asp-controller="Organizer" asp-action="Events" class="btn btn-outline-dark shadow-sm">
+            <i class="bi bi-calendar3 me-1"></i> Mes Événements
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Revenus Simulés</span>
+                    <div class="bg-warning bg-opacity-10 p-2 rounded-3 text-warning">
+                        <i class="bi bi-wallet2 fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">@Model.TotalRevenueFcfa.ToString("N0") <span class="fs-6 text-muted font-normal">FCFA</span></h3>
+                <span class="badge bg-success bg-opacity-10 text-success small fw-medium">
+                    <i class="bi bi-arrow-up-right me-1"></i>+14.2% ce mois
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Inscriptions Totales</span>
+                    <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
+                        <i class="bi bi-people-fill fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">@Model.TotalRegistrations</h3>
+                <span class="text-muted small">Sur @Model.TotalEvents événements créés</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Taux de Présence</span>
+                    <div class="bg-info bg-opacity-10 p-2 rounded-3 text-info">
+                        <i class="bi bi-qr-code-scan fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">@Model.AveragePresenceRate%</h3>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: @Model.AveragePresenceRate%" aria-valuenow="@Model.AveragePresenceRate" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-semibold text-uppercase">Présences Validées</span>
+                    <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success">
+                        <i class="bi bi-patch-check-fill fs-4"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">@Model.TotalCheckIns</h3>
+                <span class="text-muted small">Billet scannés jour J</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
+            <div class="card-header bg-transparent border-0 pt-3 px-4 d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-bar-chart-line text-warning me-2"></i>Évolution des Inscriptions & Revenus</h5>
+                <span class="badge bg-light text-dark border">Année 2026</span>
+            </div>
+            <div class="card-body px-4 pb-4">
+                <canvas id="revenueChart" style="max-height: 280px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
+            <div class="card-header bg-transparent border-0 pt-3 px-4">
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-pie-chart text-info me-2"></i>Répartition par Catégorie</h5>
+            </div>
+            <div class="card-body px-4 pb-4 d-flex align-items-center justify-content-center">
+                <canvas id="categoryChart" style="max-height: 250px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+    <div class="card-header bg-transparent border-0 pt-3 px-4 d-flex align-items-center justify-content-between">
+        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-calendar-week me-2 text-warning"></i>Événements en cours & récents</h5>
+        <a asp-controller="Organizer" asp-action="Events" class="btn btn-sm btn-outline-secondary">Tout afficher</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Événement</th>
+                        <th>Catégorie</th>
+                        <th>Date</th>
+                        <th>Inscrits / Capacité</th>
+                        <th>Taux de remplissage</th>
+                        <th>Statut</th>
+                        <th class="pe-4 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var evt in Model.RecentEvents)
+                    {
+                        var fillRate = evt.MaxCapacity > 0 ? (int)Math.Round((double)evt.RegisteredCount / evt.MaxCapacity * 100) : 0;
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">@evt.Title</div>
+                                <div class="small text-muted text-truncate" style="max-width: 250px;"><i class="bi bi-geo-alt me-1"></i>@evt.LocationAddress</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border">@evt.CategoryName</span>
+                            </td>
+                            <td class="small">
+                                <i class="bi bi-calendar me-1"></i>@evt.StartDate.ToString("dd MMM yyyy, HH:mm")
+                            </td>
+                            <td>
+                                <span class="fw-bold text-dark">@evt.RegisteredCount</span> / @evt.MaxCapacity
+                            </td>
+                            <td style="min-width: 140px;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar @(fillRate >= 90 ? "bg-danger" : fillRate >= 60 ? "bg-warning" : "bg-success")"
+                                             role="progressbar" style="width: @fillRate%"></div>
+                                    </div>
+                                    <span class="small fw-semibold">@fillRate%</span>
+                                </div>
+                            </td>
+                            <td>
+                                @if (evt.Status == "Publié")
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success fw-semibold"><i class="bi bi-circle-fill me-1 small"></i>Publié</span>
+                                }
+                                else if (evt.Status == "Brouillon")
+                                {
+                                    <span class="badge bg-warning bg-opacity-10 text-warning fw-semibold"><i class="bi bi-pencil me-1"></i>Brouillon</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold">Terminé</span>
+                                }
+                            </td>
+                            <td class="pe-4 text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-controller="Events" asp-action="Details" asp-route-id="@evt.Id" class="btn btn-outline-secondary" title="Voir l'événement">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-controller="Organizer" asp-action="Attendees" asp-route-id="@evt.Id" class="btn btn-outline-primary" title="Liste des Inscrits & Check-in">
+                                        <i class="bi bi-people"></i>
+                                    </a>
+                                    <a asp-controller="Events" asp-action="Edit" asp-route-id="@evt.Id" class="btn btn-outline-dark" title="Éditer">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctxRevenue, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil'],
+                    datasets: [
+                        {
+                            label: 'Revenus (x10k FCFA)',
+                            data: [120, 190, 300, 250, 380, 420, 345],
+                            backgroundColor: 'rgba(255, 183, 3, 0.8)',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Nombre d\'inscrits',
+                            data: [45, 60, 95, 80, 120, 140, 120],
+                            backgroundColor: 'rgba(18, 22, 37, 0.8)',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+            const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctxCategory, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hackathon', 'Bootcamp', 'Conférence', 'Workshop', 'Concert'],
+                    datasets: [{
+                        data: [35, 20, 25, 10, 10],
+                        backgroundColor: [
+                            '#ffb703',
+                            '#f77f00',
+                            '#d62828',
+                            '#003049',
+                            '#6c757d'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        });
+    </script>
+}
