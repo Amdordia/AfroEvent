@@ -14,7 +14,6 @@ public class AdminDashboardViewModel
     public int EvenementsEnModerationCount { get; set; }
 
     public List<OrganisateurItemViewModel> OrganisateursEnAttente { get; set; } = new();
-    public List<EvenementModerationViewModel> EvenementsEnModeration { get; set; } = new();
     public List<ActiviteRecenteViewModel> ActivitesRecentes { get; set; } = new();
     public List<RevenuParCategorieViewModel> RevenusParCategorie { get; set; } = new();
 }
@@ -27,20 +26,7 @@ public class OrganisateurItemViewModel
     public string Email { get; set; } = string.Empty;
     public string Telephone { get; set; } = string.Empty;
     public DateTime DateDemande { get; set; }
-    public string Statut { get; set; } = "En attente"; // En attente, Approuvé, Rejeté
-}
-
-public class EvenementModerationViewModel
-{
-    public Guid Id { get; set; }
-    public string Titre { get; set; } = string.Empty;
-    public string OrganisateurNom { get; set; } = string.Empty;
-    public string Categorie { get; set; } = string.Empty;
-    public DateTime DateDebut { get; set; }
-    public decimal PrixTicket { get; set; }
-    public int PlacesReservees { get; set; }
-    public int CapaciteMax { get; set; }
-    public string Statut { get; set; } = "En attente"; // Publié, En attente, Bloqué
+    public string Statut { get; set; } = "En attente";
 }
 
 public class ActiviteRecenteViewModel

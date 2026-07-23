@@ -53,58 +53,6 @@ public class AdminController : Controller
         }
     };
 
-    private static readonly List<EvenementModerationViewModel> _evenementsMock = new()
-    {
-        new EvenementModerationViewModel
-        {
-            Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-            Titre = "Hackathon IA & Green Tech Bamako 2026",
-            OrganisateurNom = "Mali Tech Hub",
-            Categorie = "Hackathon",
-            DateDebut = DateTime.Now.AddDays(15),
-            PrixTicket = 15000,
-            PlacesReservees = 85,
-            CapaciteMax = 120,
-            Statut = "En attente"
-        },
-        new EvenementModerationViewModel
-        {
-            Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-            Titre = "Grand Nuit du Mandingue à l'Hôtel de l'Amitié",
-            OrganisateurNom = "Bamako Music Pro",
-            Categorie = "Concert",
-            DateDebut = DateTime.Now.AddDays(7),
-            PrixTicket = 25000,
-            PlacesReservees = 450,
-            CapaciteMax = 500,
-            Statut = "Publié"
-        },
-        new EvenementModerationViewModel
-        {
-            Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-            Titre = "Bootcamp Fullstack ASP.NET Core & React",
-            OrganisateurNom = "Mali Tech Hub",
-            Categorie = "Bootcamp",
-            DateDebut = DateTime.Now.AddDays(30),
-            PrixTicket = 50000,
-            PlacesReservees = 30,
-            CapaciteMax = 50,
-            Statut = "Publié"
-        },
-        new EvenementModerationViewModel
-        {
-            Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-            Titre = "Forum Entrepreneuriat Féminin & Digital",
-            OrganisateurNom = "Innov'Sahel",
-            Categorie = "Conférence",
-            DateDebut = DateTime.Now.AddDays(12),
-            PrixTicket = 0, // Gratuit
-            PlacesReservees = 210,
-            CapaciteMax = 300,
-            Statut = "En attente"
-        }
-    };
-
     public IActionResult Dashboard()
     {
         var model = new AdminDashboardViewModel
@@ -115,10 +63,8 @@ public class AdminController : Controller
             TotalRevenusSimules = 28750000, // FCFA
 
             OrganisateursEnAttenteCount = _organisateursMock.Count(o => o.Statut == "En attente"),
-            EvenementsEnModerationCount = _evenementsMock.Count(e => e.Statut == "En attente"),
 
             OrganisateursEnAttente = _organisateursMock.Where(o => o.Statut == "En attente").ToList(),
-            EvenementsEnModeration = _evenementsMock,
             
             ActivitesRecentes = new List<ActiviteRecenteViewModel>
             {
@@ -162,32 +108,6 @@ public class AdminController : Controller
         {
             org.Statut = "Rejeté";
             TempData["WarningMessage"] = $"La demande de {org.NomOrganisation} a été rejetée.";
-        }
-        return RedirectToAction(nameof(Dashboard));
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult ValiderEvenement(Guid id)
-    {
-        var ev = _evenementsMock.FirstOrDefault(e => e.Id == id);
-        if (ev != null)
-        {
-            ev.Statut = "Publié";
-            TempData["SuccesMessage"] = $"L'événement '{ev.Titre}' a été validé et publié.";
-        }
-        return RedirectToAction(nameof(Dashboard));
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult BloquerEvenement(Guid id)
-    {
-        var ev = _evenementsMock.FirstOrDefault(e => e.Id == id);
-        if (ev != null)
-        {
-            ev.Statut = "Bloqué";
-            TempData["WarningMessage"] = $"L'événement '{ev.Titre}' a été bloqué par l'administration.";
         }
         return RedirectToAction(nameof(Dashboard));
     }
