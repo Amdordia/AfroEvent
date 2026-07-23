@@ -1,0 +1,167 @@
+@model AfroEvent.ViewModels.AdminDashboardViewModel
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h5 class="fw-bold mb-1 text-dark">Vue d'ensemble de la Plateforme</h5>
+        <p class="text-muted small mb-0">Indicateurs clés de performance et activités récentes.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-2" style="background: white;">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Revenus Simulés</span>
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: rgba(243, 112, 33, 0.1); color: #f37021;">
+                        <i class="bi bi-wallet2 fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">@Model.TotalRevenusSimules.ToString("N0") <span class="fs-6 text-muted fw-normal">FCFA</span></h3>
+                <div class="d-flex align-items-center gap-1">
+                    <span class="text-success fw-semibold small d-flex align-items-center">
+                        <i class="bi bi-arrow-up-right me-1"></i>+14.2%
+                    </span>
+                    <span class="text-muted small" style="font-size: 0.75rem;">ce mois-ci</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-2" style="background: white;">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Total Événements</span>
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: rgba(255, 184, 0, 0.15); color: #ffb800;">
+                        <i class="bi bi-calendar2-week fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">@Model.TotalEvenements</h3>
+                <div class="d-flex align-items-center gap-1">
+                    <span class="text-warning fw-semibold small d-flex align-items-center">
+                        <i class="bi bi-clock-history me-1"></i>@Model.EvenementsEnModerationCount
+                    </span>
+                    <span class="text-muted small" style="font-size: 0.75rem;">en attente de modération</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-2" style="background: white;">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Billets Émis</span>
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: rgba(13, 202, 240, 0.1); color: #0dcaf0;">
+                        <i class="bi bi-ticket-perforated fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">@Model.TotalBilletsVendus.ToString("N0")</h3>
+                <div class="d-flex align-items-center gap-1">
+                    <span class="text-info fw-semibold small d-flex align-items-center">
+                        <i class="bi bi-qr-code-scan me-1"></i>Valides
+                    </span>
+                    <span class="text-muted small" style="font-size: 0.75rem;">inscriptions générées</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 p-2" style="background: white;">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Organisateurs</span>
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: rgba(25, 135, 84, 0.1); color: #198754;">
+                        <i class="bi bi-people fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">@Model.TotalOrganisateurs</h3>
+                <div class="d-flex align-items-center gap-1">
+                    @if (Model.OrganisateursEnAttenteCount > 0)
+                    {
+                        <span class="text-danger fw-semibold small d-flex align-items-center">
+                            <i class="bi bi-person-exclamation me-1"></i>@Model.OrganisateursEnAttenteCount
+                        </span>
+                        <span class="text-muted small" style="font-size: 0.75rem;">en attente de validation</span>
+                    }
+                    else
+                    {
+                        <span class="text-success fw-semibold small d-flex align-items-center">
+                            <i class="bi bi-check-circle me-1"></i>Actifs
+                        </span>
+                        <span class="text-muted small" style="font-size: 0.75rem;">tous validés</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 h-100" style="background: white;">
+            <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-activity text-warning me-2"></i>Activités Système Récentes</h6>
+                <span class="badge bg-light text-muted fw-normal" style="font-size: 0.75rem;">Temps réel</span>
+            </div>
+            <div class="card-body pt-0">
+                <div class="timeline mt-2">
+                    @foreach (var act in Model.ActivitesRecentes)
+                    {
+                        <div class="d-flex mb-3 align-items-start pb-3 border-bottom border-light">
+                            <div class="me-3 mt-1">
+                                @if (act.Type == "Événement")
+                                {
+                                    <span class="badge bg-warning bg-opacity-10 text-dark rounded-pill px-2 py-1 small">Evt</span>
+                                }
+                                else if (act.Type == "Organisateur")
+                                {
+                                    <span class="badge bg-info bg-opacity-10 text-info rounded-pill px-2 py-1 small">Org</span>
+                                }
+                                else if (act.Type == "Finance")
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 small">Fin</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 small">Alert</span>
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="text-dark fw-semibold" style="font-size: 0.85rem;">@act.Description</div>
+                                <div class="text-muted" style="font-size: 0.75rem;"><i class="bi bi-clock me-1"></i>@act.DateHeure.ToString("HH:mm")</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 h-100" style="background: white;">
+            <div class="card-header bg-white py-3 border-0">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-pie-chart-fill text-warning me-2"></i>Revenus par Catégorie</h6>
+            </div>
+            <div class="card-body pt-0">
+                <div class="d-flex flex-column gap-3 mt-2">
+                    @foreach (var cat in Model.RevenusParCategorie)
+                    {
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">@cat.Categorie</span>
+                                <span class="fw-bold text-dark" style="font-size: 0.85rem;">@cat.Montant.ToString("N0") <small class="text-muted fw-normal">FCFA</small></span>
+                            </div>
+                            <div class="progress rounded-pill" style="height: 6px; background-color: #f1f5f9;">
+                                <div class="progress-bar" role="progressbar" style="width: @cat.Pourcentage%; background-color: #f37021;" aria-valuenow="@cat.Pourcentage" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="text-end text-muted mt-1" style="font-size: 0.7rem;">@cat.Pourcentage.ToString("N1")% des revenus</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

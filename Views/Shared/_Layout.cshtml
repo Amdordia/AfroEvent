@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-warning" asp-area="" asp-controller="Home" asp-action="Index">🌍 AfroEvent</a>
+                <a class="navbar-brand fw-bold asp-area="" asp-controller="Home" asp-action="Index">🎫 Afro<span style="color: #ffb800;">Event</span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,6 +24,11 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" href="#">Parcourir les événements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" asp-area="" asp-controller="Admin" asp-action="Dashboard">
+                                Dashboard Admin
+                            </a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
