@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AfroEvent.ViewModels
 {
+    public enum TypePass { Etudiant, Professionnel, VIP }
     public class ConferenceInscriptionViewModel
     {
         [Display(Name = "Nom complet")]
@@ -16,7 +17,13 @@ namespace AfroEvent.ViewModels
 
         [Display(Name = "Type de pass")]
         [Required(ErrorMessage = "Le type de pass est obligatoire.")]
-        public string TypePass { get; set; } = string.Empty;
+        //[EnumDataType()]
+        [EnumDataType(typeof(TypePass))]
+        public TypePass TypeP { get; set; }
+        //public enum TypePass { Unknown=-3, Late=-1, OnTime=0, Early=1 };
+        // public string TypePass { get; set; } = string.Empty;
+        //public enum TypePassed {Etudiant, Professionnel, VIP};
+
 
         [Display(Name = "Nombre de places")]
         [Range(1, 5, ErrorMessage = "Le nombre de places doit être compris entre 1 et 5.")]
