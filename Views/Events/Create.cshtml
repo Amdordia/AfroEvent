@@ -1,0 +1,242 @@
+@model AfroEvent.ViewModels.EventFormViewModel
+@{
+    ViewData["Title"] = "Créer un Événement";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-1"><i class="bi bi-plus-circle-fill text-warning me-2"></i>Créer un Événement</h2>
+                <p class="text-muted mb-0">Renseignez les détails logistiques, la billetterie et le programme de votre événement.</p>
+            </div>
+            <a asp-controller="Organizer" asp-action="Dashboard" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+            <div class="card-body p-2">
+                <ul class="nav nav-pills nav-justified" id="createEventTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-semibold py-3" id="step1-tab" data-bs-toggle="pill" data-bs-target="#step1" type="button" role="tab">
+                            <span class="badge bg-dark me-2">1</span> Informations Générales
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold py-3" id="step2-tab" data-bs-toggle="pill" data-bs-target="#step2" type="button" role="tab">
+                            <span class="badge bg-dark me-2">2</span> Date & Localisation
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold py-3" id="step3-tab" data-bs-toggle="pill" data-bs-target="#step3" type="button" role="tab">
+                            <span class="badge bg-dark me-2">3</span> Billetterie & Capacité
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold py-3" id="step4-tab" data-bs-toggle="pill" data-bs-target="#step4" type="button" role="tab">
+                            <span class="badge bg-dark me-2">4</span> Programme & Intervenants
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <form asp-action="Create" method="post">
+            <div class="tab-content" id="createEventTabsContent">
+                
+                <div class="tab-pane fade show active" id="step1" role="tabpanel">
+                    <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Informations Générales</h4>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-semibold"></label>
+                            <input asp-for="Title" class="form-control form-control-lg" placeholder="ex: Hackathon Bamako 2026, Concert Afrobeats..." />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label fw-semibold"></label>
+                                <select asp-for="CategoryId" class="form-select">
+                                    <option value="">-- Sélectionner une catégorie --</option>
+                                    <option value="1">Hackathon</option>
+                                    <option value="2">Bootcamp</option>
+                                    <option value="3">Conférence</option>
+                                    <option value="4">Concert / Festivities</option>
+                                    <option value="5">Workshop / Atelier</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CoverImageUrl" class="form-label fw-semibold"></label>
+                                <input asp-for="CoverImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+                                <span asp-validation-for="CoverImageUrl" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-semibold"></label>
+                            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Décrivez en détail l'événement, les objectifs, les prérequis..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="btn btn-afro px-4" onclick="nextTab('#step2-tab')">Suivant <i class="bi bi-arrow-right ms-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="step2" role="tabpanel">
+                    <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="bi bi-geo-alt text-danger me-2"></i>Date & Localisation</h4>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="StartDate" class="form-label fw-semibold"></label>
+                                <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="EndDate" class="form-label fw-semibold"></label>
+                                <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="EndDate" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LocationAddress" class="form-label fw-semibold"></label>
+                            <input asp-for="LocationAddress" class="form-control" placeholder="ex: Centre International de Conférences de Bamako (CICB), Quartier du Fleuve" />
+                            <span asp-validation-for="LocationAddress" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Latitude" class="form-label fw-semibold"></label>
+                                <input asp-for="Latitude" class="form-control" id="latitudeInput" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Longitude" class="form-label fw-semibold"></label>
+                                <input asp-for="Longitude" class="form-control" id="longitudeInput" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Emplacement sur la carte OpenStreetMap</label>
+                            <div id="createEventMap" class="rounded-4 border" style="height: 250px;"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" onclick="nextTab('#step1-tab')"><i class="bi bi-arrow-left me-1"></i> Précédent</button>
+                            <button type="button" class="btn btn-afro px-4" onclick="nextTab('#step3-tab')">Suivant <i class="bi bi-arrow-right ms-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="step3" role="tabpanel">
+                    <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="bi bi-ticket-perforated text-warning me-2"></i>Billetterie & Tarification</h4>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Price" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <input asp-for="Price" class="form-control form-control-lg" type="number" step="500" />
+                                    <span class="input-group-text fw-bold">FCFA</span>
+                                </div>
+                                <div class="form-text">Indiquez 0 si l'événement est 100% gratuit.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="MaxCapacity" class="form-label fw-semibold"></label>
+                                <input asp-for="MaxCapacity" class="form-control form-control-lg" type="number" min="1" />
+                                <div class="form-text">Nombre maximum de places disponibles.</div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info border-0 rounded-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-shield-check fs-4"></i>
+                            <div>
+                                <strong>Génération automatique du e-billet PDF :</strong> Dès l'inscription, un billet avec QR Code chiffré unique sera généré pour chaque participant.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" onclick="nextTab('#step2-tab')"><i class="bi bi-arrow-left me-1"></i> Précédent</button>
+                            <button type="button" class="btn btn-afro px-4" onclick="nextTab('#step4-tab')">Suivant <i class="bi bi-arrow-right ms-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="step4" role="tabpanel">
+                    <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill text-info me-2"></i>Intervenants (Speakers)</h4>
+                        
+                        <div class="border rounded-3 p-3 mb-3 bg-light">
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="Nom complet" value="Aminata Diallo">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" placeholder="Titre / Biographie rapide" value="Directrice de l'Innovation Tech">
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i> Retirer</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-outline-primary mb-4"><i class="bi bi-plus-lg me-1"></i> Ajouter un intervenant</button>
+
+                        <h4 class="fw-bold text-dark mb-3"><i class="bi bi-calendar-event text-secondary me-2"></i>Programme (Agenda)</h4>
+                        <div class="border rounded-3 p-3 mb-3 bg-light">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" placeholder="Titre de la session (ex: Accueil & Inscription)" value="Cérémonie d'Ouverture">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="time" class="form-control" value="09:00">
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i> Retirer</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-outline-primary mb-4"><i class="bi bi-plus-lg me-1"></i> Ajouter une session au programme</button>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" onclick="nextTab('#step3-tab')"><i class="bi bi-arrow-left me-1"></i> Précédent</button>
+                            <button type="submit" class="btn btn-success btn-lg px-5 shadow"><i class="bi bi-check-lg me-1"></i> Publier l'événement</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function nextTab(tabId) {
+            const triggerEl = document.querySelector(tabId);
+            if (triggerEl) {
+                const tab = new bootstrap.Tab(triggerEl);
+                tab.show();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const map = L.map('createEventMap').setView([12.6392, -8.0029], 12);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+
+            let marker = L.marker([12.6392, -8.0029], { draggable: true }).addTo(map);
+            marker.on('dragend', function (e) {
+                const latlng = marker.getLatLng();
+                document.getElementById('latitudeInput').value = latlng.lat.toFixed(6);
+                document.getElementById('longitudeInput').value = latlng.lng.toFixed(6);
+            });
+        });
+    </script>
+}
