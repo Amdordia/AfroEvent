@@ -1,55 +1,154 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AfroEvent</title>
+    
+    <!-- Bootstrap CSS & Icons -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Leaflet.js (OpenStreetMap) CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <!-- Custom Site CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    <style>
+        :root {
+            --afro-gold: #ffb703;
+            --afro-dark: #121625;
+            --afro-primary: #f77f00;
+            --afro-accent: #d62828;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .navbar-afro {
+            background-color: var(--afro-dark) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .btn-afro {
+            background-color: var(--afro-primary);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-afro:hover {
+            background-color: #e06c00;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .btn-afro-gold {
+            background-color: var(--afro-gold);
+            color: var(--afro-dark);
+            font-weight: 700;
+            border: none;
+        }
+        .btn-afro-gold:hover {
+            background-color: #e5a400;
+            color: var(--afro-dark);
+        }
+        .badge-realtime {
+            animation: pulse-live 2s infinite;
+        }
+        @@keyframes pulse-live {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+    </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-warning" asp-area="" asp-controller="Home" asp-action="Index">🌍 AfroEvent</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-afro py-3">
+            <div class="container">
+                <a class="navbar-brand fw-bold fs-4 text-warning d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-ticket-perforated-fill text-warning fs-3"></i>
+                    <span>Afro<span class="text-light">Event</span></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Accueil</a>
+                            <a class="nav-link text-light px-3" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="#">Parcourir les événements</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-bold" href="#">Espace Organisateur</a>
+                            <a class="nav-link text-light px-3" asp-controller="Events" asp-action="Index"><i class="bi bi-calendar-event me-1"></i>Événements</a>
                         </li>
                     </ul>
+                    
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Navigation Espace Organisateur -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-warning dropdown-toggle fw-semibold" type="button" id="organizerMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-speedometer2 me-1"></i> Espace Organisateur
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="organizerMenu">
+                                <li>
+                                    <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Dashboard">
+                                        <i class="bi bi-grid-1x2-fill text-primary me-2"></i> Tableau de bord (Dashboard)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Events">
+                                        <i class="bi bi-kanban-fill text-info me-2"></i> Gérer mes événements
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2 fw-semibold text-success" asp-controller="Events" asp-action="Create">
+                                        <i class="bi bi-plus-circle-fill me-2"></i> + Créer un événement
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="container mt-3">
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-check-circle-fill fs-5"></i>
+                <div>@TempData["SuccessMessage"]</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+
+    <div class="container flex-grow-1 my-4">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-light mt-5">
-        <div class="container py-3 text-center">
-            &copy; @DateTime.Now.Year - AfroEvent - La plateforme centralisée de vos événements
+    <footer class="footer mt-auto py-4 bg-dark text-white-50 border-top border-secondary">
+        <div class="container text-center text-md-start">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <h5 class="text-warning fw-bold"><i class="bi bi-globe-africa-west me-2"></i>AfroEvent</h5>
+                    <p class="small text-muted mb-0">La plateforme centralisée d'organisation, de billetterie et de gestion d'événements optimisée pour l'écosystème africain.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="small">&copy; @DateTime.Now.Year AfroEvent | Conçu avec excellence par <strong>ANNOORA (PERFECT_Dev)</strong></span>
+                </div>
+            </div>
         </div>
     </footer>
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
