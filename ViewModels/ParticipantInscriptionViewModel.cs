@@ -2,12 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AfroEvent.ViewModels
 {
-    public enum EvenementChoice
-    {
-        FeteEtudiant,
-        FeteTabaski,
-        Conference
-    }
+   
 
     public class ParticipantInscriptionViewModel
     {
@@ -28,13 +23,13 @@ namespace AfroEvent.ViewModels
 
        
 
-        [Display(Name = "Choisir un événement")]
-        [Required(ErrorMessage = "Vous devez choisir un événement.")]
-        [EnumDataType(typeof(EvenementChoice))]
-        public EvenementChoice Evenement { get; set; }
+       
+       
+
+        
 
         [Display(Name = "J'accepte les conditions")]
         [MustBeTrue(ErrorMessage = "Vous devez accepter les conditions.")]
-        public bool AccepteConditions { get; set; }
+        public bool AccepteConditions { get; set; } = true;
     }
 }

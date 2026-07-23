@@ -1,0 +1,59 @@
+@{
+    ViewData["Title"] = "Votre e-billet";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px; font-size: 2rem;">
+                            ✓
+                        </div>
+                        <h1 class="fw-bold mt-3">Étape 3 : Votre e-billet</h1>
+                        <p class="text-muted">Votre billet est prêt à être présenté à l’entrée.</p>
+                        <div class="d-flex justify-content-center gap-2 mt-2">
+                            <span class="badge bg-success">1. Inscription</span>
+                            <span class="badge bg-success">2. Paiement</span>
+                            <span class="badge bg-dark">3. Billet</span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <strong>@ViewBag.SuccessMessage</strong>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <div class="border rounded-4 p-4 h-100">
+                                <h5 class="fw-bold">Détails du billet</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Événement :</strong> @ViewBag.EventName</li>
+                                    <li><strong>Participant :</strong> @ViewBag.ParticipantName</li>
+                                    <li><strong>Email :</strong> @ViewBag.ParticipantEmail</li>
+                                    <li><strong>Pass :</strong> @ViewBag.ParticipantPass</li>
+                                    <li><strong>Statut :</strong> @ViewBag.PaymentStatus</li>
+                                    <li><strong>Numéro de billet :</strong> @ViewBag.TicketId</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="border rounded-4 p-4 text-center h-100">
+                                <h5 class="fw-bold">QR code e-billet</h5>
+                                <div class="d-flex justify-content-center mt-3">
+                                    @Html.Raw(ViewBag.QrSvg)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-center d-flex justify-content-center gap-2 flex-wrap">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Retour à l'accueil</a>
+                        <a asp-action="DownloadTicket" asp-route-nom="@ViewBag.EventName" class="btn btn-warning text-dark fw-bold">Télécharger le billet</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

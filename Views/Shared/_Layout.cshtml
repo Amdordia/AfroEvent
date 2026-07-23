@@ -30,6 +30,18 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" id="notifToggle" role="button" onclick="toggleNotifications(event)">
+                                <i class="bi bi-bell-fill text-warning" style="font-size:1.2rem;"></i>
+                                <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;">0</span>
+                            </a>
+                            <div id="notifDropdown" class="dropdown-menu dropdown-menu-end p-2" style="min-width:300px; display:none;">
+                                <div id="notifItems">
+                                    <div class="text-muted small">Aucune notification</div>
+                                </div>
+                                <div class="text-center mt-2"><a href="/Home/Index">Voir toutes</a></div>
+                            </div>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-warning fw-bold" href="#">Espace Organisateur</a>
                         </li>
@@ -53,6 +65,7 @@
     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js" integrity="sha512-ybGm3Xc1..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -1,12 +1,41 @@
+@model IEnumerable<AfroEvent.Models.EventItem>
 @{
-    var events = ViewBag.EventList as List<string> ?? new List<string>();
+    ViewData["Title"] = "Événements";
 }
 
-<h1>Événements à venir</h1>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold">Événements à venir</h1>
+            <p class="text-muted mb-0">Découvrez les événements, leurs billetteries, leur logistique et leur présentation.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-warning text-dark fw-bold">Créer un événement</a>
+    </div>
 
-<ul>
-@foreach (var ev in events)
-{
-    <li>@ev</li>
-}
-</ul>
+    <div class="row g-4">
+        @foreach (var ev in Model)
+        {
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="badge bg-warning text-dark">@ev.Category</span>
+                                <h3 class="fw-bold mt-2">@ev.Name</h3>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold">@ev.Price.ToString("N0") FCFA</div>
+                                <small class="text-muted">@ev.AvailablePlaces places</small>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">@ev.ShortDescription</p>
+                        <p class="mb-2"><strong>Lieu :</strong> @ev.Location</p>
+                        <p class="mb-3"><strong>Logistique :</strong> @ev.Logistics</p>
+                        <a asp-action="Details" asp-route-id="@ev.Id" class="btn btn-outline-dark">Voir la présentation</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    </div>
+</div>

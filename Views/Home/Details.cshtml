@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Détails de l'événement";
+}
+
+<div class="container py-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-5">
+            <h1 class="fw-bold mb-3">@ViewBag.EventName</h1>
+            <p class="text-muted">Voici les détails de cet événement.</p>
+            <p>Vous pouvez enrichir cette page plus tard avec la date, le lieu, la description et les inscriptions.</p>
+            <a asp-action="Index" class="btn btn-outline-dark mt-3">Retour à l'accueil</a>
+        </div>
+    </div>
+</div>

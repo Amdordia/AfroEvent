@@ -1,22 +1,55 @@
 ﻿@{
     ViewData["Title"] = "Accueil";
+    var evenements = ViewBag.EventList as IEnumerable<AfroEvent.Models.EventItem> ?? Array.Empty<AfroEvent.Models.EventItem>();
 }
 
 <div class="text-center py-5">
+    @if (!string.IsNullOrEmpty(ViewBag.PaymentNotification as string))
+    {
+        <div class="container mb-3">
+            <div class="alert alert-success text-center" role="alert">
+                @ViewBag.PaymentNotification
+            </div>
+        </div>
+    }
+
     <h1 class="display-4 fw-bold text-dark">Bienvenue sur <span class="text-warning">AfroEvent</span></h1>
     <p class="lead mt-3 text-secondary">
         La solution tout-en-un, centralisée et optimisée pour l'écosystème africain. <br />
         Gérez l'intégralité du cycle de vie de vos événements.
     </p>
     <div class="mt-4">
-        <a href="#" class="btn btn-warning btn-lg mx-2 text-dark fw-bold">Découvrir les événements</a>
-        <a href="#" class="btn btn-outline-dark btn-lg mx-2">Créer un événement</a>
+        <a asp-controller="Events" asp-action="Index" class="btn btn-warning btn-lg mx-2 text-dark fw-bold">Découvrir les événements</a>
+        <a asp-controller="Events" asp-action="Create" class="btn btn-outline-dark btn-lg mx-2">Créer un événement</a>
     </div>
 </div>
 
 <hr class="my-5" />
 
-<div class="row text-center mt-4">
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Événements à venir</h2>
+    <p class="text-secondary">Découvrez les prochains rendez-vous proposés sur AfroEvent.</p>
+</div>
+
+<div class="row g-4">
+    @foreach (var evenement in evenements)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <span class="badge bg-warning text-dark">@evenement.Category</span>
+                    <h5 class="card-title fw-bold mt-2">@evenement.Name</h5>
+                    <p class="card-text text-muted">@evenement.ShortDescription</p>
+                    <p class="small text-dark mb-2"><strong>Lieu :</strong> @evenement.Location</p>
+                    <p class="small text-dark mb-3"><strong>Places :</strong> @evenement.AvailablePlaces / @evenement.Capacity</p>
+                    <a asp-controller="Events" asp-action="Details" asp-route-id="@evenement.Id" class="btn btn-warning text-dark">Voir plus</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row text-center mt-5">
     <div class="col-md-4">
         <h3>Centralisé</h3>
         <p>Fini la fragmentation entre Google Forms, WhatsApp et Excel. Tout est ici.</p>
