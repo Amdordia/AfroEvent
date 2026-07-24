@@ -1,17 +1,9 @@
-﻿@{
+@{
     ViewData["Title"] = "Accueil";
     var evenements = ViewBag.EventList as IEnumerable<AfroEvent.Models.EventItem> ?? Array.Empty<AfroEvent.Models.EventItem>();
 }
 
 <div class="text-center py-5">
-    @if (!string.IsNullOrEmpty(ViewBag.PaymentNotification as string))
-    {
-        <div class="container mb-3">
-            <div class="alert alert-success text-center" role="alert">
-                @ViewBag.PaymentNotification
-            </div>
-        </div>
-    }
 
     <h1 class="display-4 fw-bold text-dark">Bienvenue sur <span class="text-warning">AfroEvent</span></h1>
     <p class="lead mt-3 text-secondary">

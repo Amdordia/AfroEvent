@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+@using Microsoft.AspNetCore.Http
+@{
+    var layoutNotif = Context.Session.GetString("PaymentNotification");
+    if (!string.IsNullOrEmpty(layoutNotif))
+    {
+        Context.Session.Remove("PaymentNotification");
+    }
+}
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
@@ -9,6 +17,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+    @if (!string.IsNullOrEmpty(layoutNotif))
+    {
+        <span id="sessionNotificationHelper" data-message="@layoutNotif" style="display:none;"></span>
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
