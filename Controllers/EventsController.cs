@@ -1,12 +1,21 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using AfroEvent.Hubs;
 using AfroEvent.ViewModels;
 
 namespace AfroEvent.Controllers;
 
 public class EventsController : Controller
 {
+    private readonly IHubContext<EventHub> _hubContext;
+
+    public EventsController(IHubContext<EventHub> hubContext)
+    {
+        _hubContext = hubContext;
+    }
+
     // GET: /Events
     public IActionResult Index()
     {
@@ -77,6 +86,19 @@ public class EventsController : Controller
 
         TempData["SuccessMessage"] = $"L'événement '{model.Title}' a été mis à jour avec succès !";
         return RedirectToAction("Events", "Organizer");
+    }
+
+    // POST: /Events/Reserve/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Reserve(Guid id)
+    {
+        var eventModel = GetMockEventFormViewModels().Find(e => e.Id == id) ?? GetMockEventFormViewModels()[0];
+        
+        await _hubContext.Clients.All.SendAsync("ReceivePlacesUpdate", id.ToString(), 14, eventModel.MaxCapacity);
+
+        TempData["Message"] = "Votre réservation a été prise en compte.";
+        return RedirectToAction("SInscrire", "Participant", new { nom = eventModel.Title });
     }
 
     private List<EventFormViewModel> GetMockEventFormViewModels()

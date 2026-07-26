@@ -3,6 +3,7 @@
     ViewData["Title"] = Model.Title;
 }
 
+<!-- HERO BANNER -->
 <div class="position-relative rounded-4 overflow-hidden shadow-lg mb-4 bg-dark text-white">
     @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
     {
@@ -16,6 +17,7 @@
     <div class="position-absolute bottom-0 start-0 w-100 p-4 p-md-5 bg-gradient-to-t">
         <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
             <span class="badge bg-warning text-dark fw-bold fs-6">@Model.CategoryName</span>
+            <!-- SignalR Realtime Badge -->
             <span class="badge bg-danger text-white fw-bold fs-6 badge-realtime">
                 <i class="bi bi-broadcast me-1"></i>En direct : 15 places restantes !
             </span>
@@ -26,12 +28,16 @@
 </div>
 
 <div class="row g-4">
+    <!-- COLONNE PRINCIPALE (DESCRIPTION, AGENDA, SPEAKERS) -->
     <div class="col-12 col-lg-8">
         
+        <!-- Description -->
         <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
             <h4 class="fw-bold text-dark mb-3"><i class="bi bi-file-text-fill text-warning me-2"></i>À propos de cet événement</h4>
             <p class="lead text-secondary fs-6" style="white-space: pre-line;">@Model.Description</p>
         </div>
+
+        <!-- Programme (Agenda) -->
         <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
             <h4 class="fw-bold text-dark mb-4"><i class="bi bi-clock-history text-primary me-2"></i>Programme de la journée</h4>
             <div class="timeline ps-3 border-start border-3 border-warning">
@@ -52,6 +58,8 @@
                 }
             </div>
         </div>
+
+        <!-- Intervenants (Speakers) -->
         <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
             <h4 class="fw-bold text-dark mb-4"><i class="bi bi-people-fill text-info me-2"></i>Intervenants & Keynotes</h4>
             <div class="row g-3">
@@ -84,12 +92,15 @@
             </div>
         </div>
 
+        <!-- Carte interactive OpenStreetMap (Leaflet.js) -->
         <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
             <h4 class="fw-bold text-dark mb-3"><i class="bi bi-map-fill text-danger me-2"></i>Localisation sur la carte</h4>
             <div id="eventDetailsMap" class="rounded-4 border" style="height: 320px;"></div>
         </div>
 
     </div>
+
+    <!-- SIDEBAR D'INSCRIPTION & INFOS PRATIQUES -->
     <div class="col-12 col-lg-4">
         <div class="card border-0 shadow-lg rounded-4 bg-white sticky-top" style="top: 90px;">
             <div class="card-body p-4">
@@ -106,20 +117,21 @@
                     }
                 </div>
 
+                <!-- Jauge de capacité SignalR UI -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between small mb-1">
                         <span class="text-muted">Capacité réservée</span>
-                        <span class="fw-bold text-dark">185 / @Model.MaxCapacity places</span>
+                        <span id="placesText" class="fw-bold text-dark">185 / @Model.MaxCapacity places</span>
                     </div>
                     <div class="progress rounded-pill" style="height: 10px;">
-                        <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 92.5%" aria-valuenow="92.5" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div id="placesProgress" class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 92.5%" aria-valuenow="92.5" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
 
                 <div class="d-grid gap-2 mb-4">
-                    <button class="btn btn-afro btn-lg py-3 rounded-3 shadow" data-bs-toggle="modal" data-bs-target="#registerModal">
+                    <a asp-controller="Participant" asp-action="SInscrire" asp-route-nom="@Model.Title" class="btn btn-afro btn-lg py-3 rounded-3 shadow text-center">
                         <i class="bi bi-ticket-detailed-fill me-2"></i> S'inscrire à cet événement
-                    </button>
+                    </a>
                 </div>
 
                 <hr>
@@ -153,53 +165,10 @@
     </div>
 </div>
 
-<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow-lg">
-            <div class="modal-header bg-warning text-dark py-3">
-                <h5 class="modal-title fw-bold"><i class="bi bi-ticket-perforated-fill me-2"></i>Inscription à @Model.Title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Nom complet</label>
-                        <input type="text" class="form-control" placeholder="ex: Kadiatou Traoré" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Adresse e-mail</label>
-                        <input type="email" class="form-control" placeholder="kadiatou@example.com" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Numéro de téléphone (WhatsApp)</label>
-                        <input type="tel" class="form-control" placeholder="+223 XX XX XX XX" required />
-                    </div>
-                    @if (Model.Price > 0)
-                    {
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Mode de paiement simulé</label>
-                            <select class="form-select">
-                                <option>Orange Money</option>
-                                <option>Wave</option>
-                                <option>Moov Money</option>
-                                <option>Carte Bancaire International</option>
-                            </select>
-                        </div>
-                    }
-                    <div class="d-grid mt-4">
-                        <button type="button" class="btn btn-afro btn-lg" onclick="alert('Inscription réussie ! Votre billet PDF avec QR Code a été simulé.')" data-bs-dismiss="modal">
-                            Confirmer & Générer mon e-Billet PDF
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Interactive Map Leaflet.js
             const lat = @Model.Latitude;
             const lng = @Model.Longitude;
 
@@ -213,5 +182,26 @@
                 .bindPopup('<b>@Model.Title</b><br>@Model.LocationAddress')
                 .openPopup();
         });
+
+        // Realtime SignalR updates
+        if (typeof signalR !== 'undefined') {
+            const eventId = '@Model.Id';
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl('/eventHub')
+                .build();
+
+            connection.on('ReceivePlacesUpdate', (updatedEventId, availablePlaces, capacity) => {
+                if (updatedEventId !== eventId) return;
+                const percent = Math.round((availablePlaces / capacity) * 100);
+                const progressEl = document.getElementById('placesProgress');
+                const textEl = document.getElementById('placesText');
+                if (progressEl) progressEl.style.width = percent + '%';
+                if (textEl) textEl.textContent = availablePlaces + ' / ' + capacity + ' places disponibles';
+            });
+
+            connection.start().then(() => {
+                connection.invoke('JoinEventGroup', eventId.toString());
+            }).catch(err => console.error(err));
+        }
     </script>
 }

@@ -13,6 +13,7 @@
             <a asp-controller="Organizer" asp-action="Dashboard" class="btn btn-outline-secondary">Annuler</a>
         </div>
 
+        <!-- Multi-Step Form Navigation Tabs -->
         <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
             <div class="card-body p-2">
                 <ul class="nav nav-pills nav-justified" id="createEventTabs" role="tablist">
@@ -40,9 +41,11 @@
             </div>
         </div>
 
+        <!-- Formulaire Multi-étapes -->
         <form asp-action="Create" method="post">
             <div class="tab-content" id="createEventTabsContent">
                 
+                <!-- ÉTAPE 1: INFORMATIONS GÉNÉRALES -->
                 <div class="tab-pane fade show active" id="step1" role="tabpanel">
                     <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
                         <h4 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Informations Générales</h4>
@@ -85,6 +88,7 @@
                     </div>
                 </div>
 
+                <!-- ÉTAPE 2: DATE & LOCALISATION -->
                 <div class="tab-pane fade" id="step2" role="tabpanel">
                     <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
                         <h4 class="fw-bold text-dark mb-3"><i class="bi bi-geo-alt text-danger me-2"></i>Date & Localisation</h4>
@@ -119,6 +123,7 @@
                             </div>
                         </div>
 
+                        <!-- Preview Carte OpenStreetMap -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Emplacement sur la carte OpenStreetMap</label>
                             <div id="createEventMap" class="rounded-4 border" style="height: 250px;"></div>
@@ -131,6 +136,7 @@
                     </div>
                 </div>
 
+                <!-- ÉTAPE 3: BILLETTERIE & CAPACITÉ -->
                 <div class="tab-pane fade" id="step3" role="tabpanel">
                     <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
                         <h4 class="fw-bold text-dark mb-3"><i class="bi bi-ticket-perforated text-warning me-2"></i>Billetterie & Tarification</h4>
@@ -165,6 +171,7 @@
                     </div>
                 </div>
 
+                <!-- ÉTAPE 4: PROGRAMME & INTERVENANTS -->
                 <div class="tab-pane fade" id="step4" role="tabpanel">
                     <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
                         <h4 class="fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill text-info me-2"></i>Intervenants (Speakers)</h4>
@@ -215,6 +222,7 @@
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <script>
         function nextTab(tabId) {
             const triggerEl = document.querySelector(tabId);
@@ -225,6 +233,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialisation Carte OpenStreetMap dans le formulaire
             const map = L.map('createEventMap').setView([12.6392, -8.0029], 12);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,

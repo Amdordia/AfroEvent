@@ -6,8 +6,12 @@ namespace AfroEvent.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly EventStore _store = EventStore.Instance;
+
     public IActionResult Index()
     {
+        var events = _store.GetAll();
+        ViewBag.EventList = events;
         return View();
     }
 
@@ -20,6 +24,11 @@ public class HomeController : Controller
 
     public IActionResult Privacy()
     {
+        return View();
+    }
+    public IActionResult Details(string nom)
+    {
+        ViewBag.EventName = nom ?? "Événement";
         return View();
     }
 
