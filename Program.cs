@@ -1,9 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using AfroEvent.Data;
 using AfroEvent.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register EF Core DbContext
+builder.Services.AddDbContext<AfroEventDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
