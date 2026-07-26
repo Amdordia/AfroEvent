@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 // Register EF Core DbContext
 builder.Services.AddDbContext<AfroEventDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
