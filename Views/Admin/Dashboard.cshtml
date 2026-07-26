@@ -1,0 +1,129 @@
+@model AfroEvent.ViewModels.AdminDashboardViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Administrateur - AfroEvent</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/dashboard.css" asp-append-version="true" />
+
+</head>
+<body>
+
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand d-flex align-items-center gap-2">
+            <span class="fs-4">🎫</span>
+            <div>
+                <span class="fw-bold text-white fs-5">Afro<span style="color: #ffb800;">Event</span></span>
+                <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem; vertical-align: middle;">ADMIN</span>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+                <button class="nav-link active text-start" id="v-pills-overview-tab" data-bs-toggle="pill" data-bs-target="#v-pills-overview" type="button" role="tab" aria-controls="v-pills-overview" aria-selected="true">
+                    <span><i class="bi bi-grid-1x2-fill main-icon"></i> Vue d'ensemble</span>
+                </button>
+
+                <button class="nav-link text-start" id="v-pills-organisateurs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-organisateurs" type="button" role="tab" aria-controls="v-pills-organisateurs" aria-selected="false">
+                    <span><i class="bi bi-people-fill main-icon"></i> Organisateurs</span>
+                    @if (Model.OrganisateursEnAttenteCount > 0)
+                    {
+                        <span class="badge bg-danger rounded-pill">@Model.OrganisateursEnAttenteCount</span>
+                    }
+                </button>
+
+                <button class="nav-link text-start" id="v-pills-finances-tab" data-bs-toggle="pill" data-bs-target="#v-pills-finances" type="button" role="tab" aria-controls="v-pills-finances" aria-selected="false">
+                    <span><i class="bi bi-cash-stack main-icon"></i> Finances & Billets</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="d-flex align-items-center gap-2">
+                <div class="overflow-hidden">
+                    <h6 class="text-white mb-0 text-truncate" style="font-size: 0.85rem;">Administrateur</h6>
+                    <small class="text-dark-emphasis d-block text-truncate" style="font-size: 0.75rem;">admin@afroevent.com</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="content-header">
+            <div class="d-flex align-items-center">
+                <h4 class="text-white fw-bold mb-0 me-3">Tableau de Bord Admin</h4>
+                <span class="badge bg-warning text-dark fw-semibold">AfroEvent Workspace</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-dark-outline btn-sm text-white" onclick="window.location.reload();">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Actualiser
+                </button>
+                <a class="btn btn-outline-warning btn-sm fw-semibold" href="/">
+                    <i class="bi bi-house me-1"></i> Aller au site
+                </a>
+            </div>
+        </header>
+
+
+        <div class="content-body">
+
+            @if (TempData["SuccesMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert" style="border-left: 4px solid #198754 !important;">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
+                        <div>@TempData["SuccesMessage"]</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["WarningMessage"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert" style="border-left: 4px solid #ffc107 !important;">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle-fill me-2 fs-5 text-warning"></i>
+                        <div>@TempData["WarningMessage"]</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="tab-content" id="v-pills-tabContent">
+                
+                <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel" aria-labelledby="v-pills-overview-tab">
+                    @await Html.PartialAsync("_OverviewTab", Model)
+                </div>
+
+                <div class="tab-pane fade" id="v-pills-organisateurs" role="tabpanel" aria-labelledby="v-pills-organisateurs-tab">
+                    @await Html.PartialAsync("_OrganisateursTab", Model)
+                </div>
+
+                <div class="tab-pane fade" id="v-pills-finances" role="tabpanel" aria-labelledby="v-pills-finances-tab">
+                    @await Html.PartialAsync("_FinancesTab", Model)
+                </div>
+
+            </div>
+        </div>
+
+        <!-- <footer class="py-3 px-4 text-center text-muted bg-white border-top mt-auto" style="font-size: 0.8rem;">
+            &copy; @DateTime.Now.Year - AfroEvent | Conçu avec excellence pour l'administration de la plateforme.
+        </footer> -->
+    </main>
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
