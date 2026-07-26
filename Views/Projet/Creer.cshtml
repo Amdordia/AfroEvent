@@ -3,51 +3,101 @@
     ViewData["Title"] = "Soumettre un Projet";
 }
 
-<div class="container mt-5">
-    <h2>Soumission de Sujet de Projet M1</h2>
-    <hr />
-
-    @if (TempData[key: "SuccesMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccesMessage"]
-        </div>
-    }
-
-    <form asp-action="Creer" method="post" class="card p-4 shadow-sm">
-        
-        <div class="mb-3">
-            <label asp-for="Titre" class="form-label fw-bold"></label>
-            <input asp-for="Titre" class="form-control" />
-            <!-- TODO 1 -->
-            <span asp-validation-for="Titre" class="text-danger"></span>
+<div class="row justify-content-center py-4">
+    <div class="col-lg-7 col-md-9">
+        <!-- Page Header -->
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-sm btn-outline-secondary rounded-pill">
+                <i class="bi bi-arrow-left me-1"></i> Accueil
+            </a>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label fw-bold"></label>
-            <!-- TODO 2  -->
-            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <!-- Card Header -->
+            <div class="card-header bg-warning text-dark py-4 px-4 text-center border-0">
+                <div class="mb-2">
+                    <i class="bi bi-lightbulb-fill fs-2"></i>
+                </div>
+                <h3 class="fw-bold mb-1">Soumission de Projet M1</h3>
+                <p class="mb-0 text-dark text-opacity-75 small">Proposez votre sujet de projet pour validation par l'équipe pédagogique.</p>
+            </div>
 
-        <div class="mb-3">
-            <label asp-for="ChefEquipe" class="form-label fw-bold"></label>
-            <input asp-for="ChefEquipe" class="form-control" />
-            <span asp-validation-for="ChefEquipe" class="text-danger"></span>
-        </div>
+            <div class="card-body p-4 p-md-5">
 
-        <div class="mb-3">
-            <label asp-for="EmailContact" class="form-label fw-bold"></label>
-            <input asp-for="EmailContact" class="form-control" />
-            <span asp-validation-for="EmailContact" class="text-danger"></span>
-        </div>
+                @if (TempData["SuccesMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-4 rounded-3" role="alert">
+                        <i class="bi bi-check-circle-fill fs-5"></i>
+                        <div>@TempData["SuccesMessage"]</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
 
-        <div class="mb-3">
-            <label asp-for="BudgetEstime" class="form-label fw-bold"></label>
-            <input asp-for="BudgetEstime" type="number" class="form-control" />
-            <span asp-validation-for="BudgetEstime" class="text-danger"></span>
-        </div>
+                <form asp-action="Creer" method="post">
+                    @Html.AntiForgeryToken()
 
-        <button type="submit" class="btn btn-primary w-100 fw-bold">Soumettre le projet</button>
-    </form>
+                    <div class="mb-3">
+                        <label asp-for="Titre" class="form-label fw-semibold">
+                            <i class="bi bi-bookmark-fill text-warning me-1"></i>
+                            <span>Titre du projet</span>
+                        </label>
+                        <input asp-for="Titre" class="form-control rounded-3"
+                               placeholder="Ex : Système de billetterie intelligent" />
+                        <span asp-validation-for="Titre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold">
+                            <i class="bi bi-file-text-fill text-warning me-1"></i>
+                            <span>Description</span>
+                        </label>
+                        <textarea asp-for="Description" class="form-control rounded-3" rows="4"
+                                  placeholder="Décrivez brièvement les objectifs et la portée du projet..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ChefEquipe" class="form-label fw-semibold">
+                            <i class="bi bi-person-fill text-warning me-1"></i>
+                            <span>Chef d'équipe</span>
+                        </label>
+                        <input asp-for="ChefEquipe" class="form-control rounded-3"
+                               placeholder="Ex : Amado Bamba" />
+                        <span asp-validation-for="ChefEquipe" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EmailContact" class="form-label fw-semibold">
+                            <i class="bi bi-envelope-fill text-warning me-1"></i>
+                            <span>Email de contact</span>
+                        </label>
+                        <input asp-for="EmailContact" class="form-control rounded-3"
+                               placeholder="chef.equipe@email.com" />
+                        <span asp-validation-for="EmailContact" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="BudgetEstime" class="form-label fw-semibold">
+                            <i class="bi bi-cash-stack text-warning me-1"></i>
+                            <span>Budget estimé (FCFA)</span>
+                        </label>
+                        <div class="input-group rounded-3 overflow-hidden">
+                            <span class="input-group-text bg-light border-end-0 fw-semibold">FCFA</span>
+                            <input asp-for="BudgetEstime" type="number" class="form-control border-start-0"
+                                   placeholder="Ex : 250000" />
+                        </div>
+                        <span asp-validation-for="BudgetEstime" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-afro w-100 py-3 rounded-3 fw-bold fs-5 shadow-sm">
+                        <i class="bi bi-send-fill me-2"></i> Soumettre le projet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

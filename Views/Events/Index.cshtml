@@ -41,41 +41,60 @@
 </div>
 
 <!-- Grille des événements -->
-<div class="row g-4 mb-5">
-    @foreach (var evt in Model)
-    {
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white overflow-hidden hover-shadow transition">
-                <div class="position-relative">
-                    <img src="@(string.IsNullOrEmpty(evt.CoverImageUrl) ? "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80" : evt.CoverImageUrl)"
-                         class="card-img-top object-fit-cover" style="height: 200px;" alt="@evt.Title" />
-                    <span class="position-absolute top-0 end-0 m-3 badge bg-warning text-dark fw-bold">@evt.CategoryName</span>
-                </div>
-                <div class="card-body p-4 d-flex flex-column">
-                    <div class="small text-muted mb-2">
-                        <i class="bi bi-calendar-event text-warning me-1"></i>@evt.StartDate.ToString("dd MMMM yyyy, HH:mm")
+@if (Model != null && Model.Any())
+{
+    <div class="row g-4 mb-5">
+        @foreach (var evt in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 bg-white overflow-hidden" style="transition: transform 0.25s ease, box-shadow 0.25s ease; cursor: pointer;"
+                     onmouseenter="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 30px rgba(0,0,0,0.1)';"
+                     onmouseleave="this.style.transform=''; this.style.boxShadow='';">
+                    <div class="position-relative">
+                        <img src="@(string.IsNullOrEmpty(evt.CoverImageUrl) ? "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80" : evt.CoverImageUrl)"
+                             class="card-img-top object-fit-cover" style="height: 200px;" alt="@evt.Title" />
+                        <span class="position-absolute top-0 end-0 m-3 badge bg-warning text-dark fw-bold">@evt.CategoryName</span>
                     </div>
-                    <h5 class="fw-bold text-dark card-title mb-2">@evt.Title</h5>
-                    <p class="card-text text-secondary small text-truncate-2 mb-3">@evt.Description</p>
-                    <div class="small text-muted mb-3"><i class="bi bi-geo-alt text-danger me-1"></i>@evt.LocationAddress</div>
-                    
-                    <div class="mt-auto pt-3 border-top d-flex align-items-center justify-content-between">
-                        <div>
-                            @if (evt.Price > 0)
-                            {
-                                <span class="fw-bold text-dark fs-5">@evt.Price.ToString("N0") <span class="fs-6 text-muted font-normal">FCFA</span></span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-success bg-opacity-10 text-success fw-bold fs-6">Gratuit</span>
-                            }
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="small text-muted mb-2">
+                            <i class="bi bi-calendar-event text-warning me-1"></i>@evt.StartDate.ToString("dd MMMM yyyy, HH:mm")
                         </div>
-                        <a asp-controller="Events" asp-action="Details" asp-route-id="@evt.Id" class="btn btn-sm btn-afro px-3 rounded-pill">
-                            Voir détails <i class="bi bi-arrow-right ms-1"></i>
-                        </a>
+                        <h5 class="fw-bold text-dark card-title mb-2">@evt.Title</h5>
+                        <p class="card-text text-secondary small mb-3">@evt.Description</p>
+                        <div class="small text-muted mb-3"><i class="bi bi-geo-alt text-danger me-1"></i>@evt.LocationAddress</div>
+
+                        <div class="mt-auto pt-3 border-top d-flex align-items-center justify-content-between">
+                            <div>
+                                @if (evt.Price > 0)
+                                {
+                                    <span class="fw-bold text-dark fs-5">@evt.Price.ToString("N0") <span class="fs-6 text-muted">FCFA</span></span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success fw-bold fs-6">Gratuit</span>
+                                }
+                            </div>
+                            <a asp-controller="Events" asp-action="Details" asp-route-id="@evt.Id" class="btn btn-sm btn-afro px-3 rounded-pill">
+                                Voir détails <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="text-center py-5 mb-4">
+        <div class="mb-4">
+            <i class="bi bi-calendar2-x" style="font-size: 5rem; color: #dee2e6;"></i>
         </div>
-    }
-</div>
+        <h4 class="text-muted fw-semibold mb-2">Aucun événement disponible</h4>
+        <p class="text-muted mb-4">Soyez le premier à créer un événement sur la plateforme AfroEvent !</p>
+        <a asp-controller="Events" asp-action="Create" class="btn btn-afro btn-lg px-5 py-3 rounded-3 shadow-sm">
+            <i class="bi bi-plus-circle-fill me-2"></i> Créer le premier événement
+        </a>
+    </div>
+}

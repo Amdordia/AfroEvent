@@ -3,59 +3,201 @@
     var evenements = ViewBag.EventList as IEnumerable<AfroEvent.Models.EventItem> ?? Array.Empty<AfroEvent.Models.EventItem>();
 }
 
-<div class="text-center py-5">
+<!-- HERO SECTION -->
+<div class="position-relative rounded-4 overflow-hidden mb-5 shadow-lg" style="background: linear-gradient(135deg, #121625 0%, #1e2840 60%, #2c1810 100%); min-height: 480px;">
+    <!-- Decorative background elements -->
+    <div class="position-absolute top-0 end-0 opacity-10" style="width: 600px; height: 600px; background: radial-gradient(circle, #ffb703 0%, transparent 70%); transform: translate(30%, -30%);"></div>
+    <div class="position-absolute bottom-0 start-0 opacity-10" style="width: 400px; height: 400px; background: radial-gradient(circle, #f77f00 0%, transparent 70%); transform: translate(-30%, 30%);"></div>
 
-    <h1 class="display-4 fw-bold text-dark">Bienvenue sur <span class="text-warning">AfroEvent</span></h1>
-    <p class="lead mt-3 text-secondary">
-        La solution tout-en-un, centralisée et optimisée pour l'écosystème africain. <br />
-        Gérez l'intégralité du cycle de vie de vos événements.
-    </p>
-    <div class="mt-4">
-        <a asp-controller="Events" asp-action="Index" class="btn btn-warning btn-lg mx-2 text-dark fw-bold">Découvrir les événements</a>
-        <a asp-controller="Events" asp-action="Create" class="btn btn-outline-dark btn-lg mx-2">Créer un événement</a>
+    <div class="position-relative z-1 d-flex flex-column align-items-center justify-content-center text-center py-5 px-3" style="min-height: 480px;">
+        <span class="badge bg-warning text-dark fw-bold px-3 py-2 mb-4 text-uppercase" style="letter-spacing: 0.08em;">
+            <i class="bi bi-globe-africa-west me-1"></i> Plateforme Événementielle Africaine
+        </span>
+        <h1 class="display-4 fw-bold text-white mb-3" style="line-height: 1.15;">
+            Gérez. Partagez. <span style="color: #ffb703;">Vivez</span> vos Événements.
+        </h1>
+        <p class="lead text-white-50 mx-auto mb-5" style="max-width: 620px;">
+            AfroEvent est la solution tout-en-un centralisée pour l'écosystème africain.
+            Créez, billetez et analysez l'intégralité du cycle de vie de vos événements.
+        </p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a asp-controller="Events" asp-action="Index" class="btn btn-afro-gold btn-lg px-4 py-3 rounded-3 shadow-sm fw-bold">
+                <i class="bi bi-calendar-event-fill me-2"></i> Découvrir les événements
+            </a>
+            <a asp-controller="Events" asp-action="Create" class="btn btn-outline-light btn-lg px-4 py-3 rounded-3 fw-semibold">
+                <i class="bi bi-plus-circle me-2"></i> Créer un événement
+            </a>
+        </div>
+
+        <!-- Stats band -->
+        <div class="d-flex flex-wrap justify-content-center gap-4 mt-5 pt-4 border-top border-white border-opacity-10 w-100" style="max-width: 700px; margin: 0 auto;">
+            <div class="text-center">
+                <div class="fs-3 fw-bold text-warning">3</div>
+                <div class="small text-white-50">Rôles intégrés</div>
+            </div>
+            <div class="text-center">
+                <div class="fs-3 fw-bold text-warning">100%</div>
+                <div class="small text-white-50">Digital & Mobile</div>
+            </div>
+            <div class="text-center">
+                <div class="fs-3 fw-bold text-warning">⚡</div>
+                <div class="small text-white-50">Temps réel (SignalR)</div>
+            </div>
+            <div class="text-center">
+                <div class="fs-3 fw-bold text-warning">🎫</div>
+                <div class="small text-white-50">E-billet QR Code</div>
+            </div>
+        </div>
     </div>
 </div>
 
-<hr class="my-5" />
-
-<div class="text-center mb-4">
-    <h2 class="fw-bold">Événements à venir</h2>
-    <p class="text-secondary">Découvrez les prochains rendez-vous proposés sur AfroEvent.</p>
+<!-- FEATURE CARDS -->
+<div class="row g-4 mb-5">
+    <div class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white text-center p-4 hover-shadow">
+            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-warning bg-opacity-10" style="width: 70px; height: 70px;">
+                <i class="bi bi-diagram-3-fill text-warning fs-2"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Centralisé</h5>
+            <p class="text-muted small mb-0">Fini la fragmentation entre Google Forms, WhatsApp et Excel. Tout le cycle de vie de l'événement en un seul endroit.</p>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white text-center p-4 hover-shadow">
+            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10" style="width: 70px; height: 70px;">
+                <i class="bi bi-qr-code-scan text-success fs-2"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Billet Numérique</h5>
+            <p class="text-muted small mb-0">Génération d'e-billet PDF instantané avec QR Code chiffré unique. Contrôle des entrées au scan le jour J.</p>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white text-center p-4 hover-shadow">
+            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-info bg-opacity-10" style="width: 70px; height: 70px;">
+                <i class="bi bi-broadcast text-info fs-2"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Temps Réel</h5>
+            <p class="text-muted small mb-0">Mises à jour live des places disponibles via SignalR. Vos participants voient l'affluence en direct.</p>
+        </div>
+    </div>
 </div>
 
-<div class="row g-4">
-    @foreach (var evenement in evenements)
-    {
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body">
-                    <span class="badge bg-warning text-dark">@evenement.Category</span>
-                    <h5 class="card-title fw-bold mt-2">@evenement.Name</h5>
-                    <p class="card-text text-muted">@evenement.ShortDescription</p>
-                    <p class="small text-dark mb-2"><strong>Lieu :</strong> @evenement.Location</p>
-                    <p class="small text-dark mb-3"><strong>Places :</strong> @evenement.AvailablePlaces / @evenement.Capacity</p>
-                    <a asp-controller="Events" asp-action="Details" asp-route-id="@evenement.Id" class="btn btn-warning text-dark">Voir plus</a>
+<!-- UPCOMING EVENTS SECTION -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Événements à venir</h2>
+        <p class="text-muted mb-0">Découvrez les prochains rendez-vous proposés sur AfroEvent.</p>
+    </div>
+    <a asp-controller="Events" asp-action="Index" class="btn btn-outline-dark btn-sm fw-semibold">
+        Tout voir <i class="bi bi-arrow-right ms-1"></i>
+    </a>
+</div>
+
+@if (evenements.Any())
+{
+    <div class="row g-4 mb-5">
+        @foreach (var evenement in evenements)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80"
+                             class="card-img-top object-fit-cover" style="height: 180px;" alt="@evenement.Name" />
+                        <span class="position-absolute top-0 end-0 m-3 badge bg-warning text-dark fw-bold">@evenement.Category</span>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h5 class="card-title fw-bold text-dark mb-2">@evenement.Name</h5>
+                        <p class="card-text text-muted small mb-3">@evenement.ShortDescription</p>
+                        <div class="d-flex align-items-center gap-3 small text-muted mb-3">
+                            <span><i class="bi bi-geo-alt text-danger me-1"></i>@evenement.Location</span>
+                            <span><i class="bi bi-people me-1"></i>@evenement.AvailablePlaces / @evenement.Capacity places</span>
+                        </div>
+                        <div class="mt-auto">
+                            <a asp-controller="Events" asp-action="Details" asp-route-id="@evenement.Id"
+                               class="btn btn-afro w-100 rounded-3">
+                                <i class="bi bi-arrow-right-circle me-1"></i> Voir les détails
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty state -->
+    <div class="text-center py-5 mb-5">
+        <div class="mb-3">
+            <i class="bi bi-calendar2-x" style="font-size: 4rem; color: #dee2e6;"></i>
+        </div>
+        <h5 class="text-muted fw-semibold mb-2">Aucun événement pour le moment</h5>
+        <p class="text-muted small mb-4">Soyez le premier à créer un événement sur AfroEvent !</p>
+        <a asp-controller="Events" asp-action="Create" class="btn btn-afro px-4 py-2 rounded-3">
+            <i class="bi bi-plus-circle me-2"></i> Créer le premier événement
+        </a>
+    </div>
+}
+
+<!-- ROLES SECTION -->
+<div class="card border-0 rounded-4 shadow-sm mb-5" style="background: linear-gradient(135deg, #121625, #1e2840);">
+    <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold text-white">Une plateforme, trois espaces dédiés</h3>
+            <p class="text-white-50">Chaque acteur dispose d'un espace optimisé pour son rôle.</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-12 col-md-4">
+                <div class="p-4 rounded-4" style="background: rgba(255,255,255,0.05);">
+                    <div class="fs-1 mb-3">🧑‍💼</div>
+                    <h5 class="fw-bold text-warning mb-2">Organisateur</h5>
+                    <p class="text-white-50 small mb-3">Créez des événements, gérez les inscriptions, analysez les données en temps réel.</p>
+                    <a asp-controller="Organizer" asp-action="Dashboard" class="btn btn-outline-warning btn-sm px-3 rounded-pill">Accéder</a>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="p-4 rounded-4" style="background: rgba(255,255,255,0.05);">
+                    <div class="fs-1 mb-3">👤</div>
+                    <h5 class="fw-bold text-info mb-2">Participant</h5>
+                    <p class="text-white-50 small mb-3">Inscrivez-vous en quelques clics, payez et recevez votre e-billet QR Code instantanément.</p>
+                    <a asp-controller="Events" asp-action="Index" class="btn btn-outline-info btn-sm px-3 rounded-pill">Voir les événements</a>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="p-4 rounded-4" style="background: rgba(255,255,255,0.05);">
+                    <div class="fs-1 mb-3">🛡️</div>
+                    <h5 class="fw-bold text-danger mb-2">Administrateur</h5>
+                    <p class="text-white-50 small mb-3">Superviser la plateforme, valider les organisateurs et contrôler les finances globales.</p>
+                    <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-danger btn-sm px-3 rounded-pill">Dashboard Admin</a>
                 </div>
             </div>
         </div>
-    }
-</div>
-
-<div class="row text-center mt-5">
-    <div class="col-md-4">
-        <h3>Centralisé</h3>
-        <p>Fini la fragmentation entre Google Forms, WhatsApp et Excel. Tout est ici.</p>
-    </div>
-    <div class="col-md-4">
-        <h3>Billet Numérique</h3>
-        <p>Génération de e-billet PDF instantané avec QR Code chiffré unique.</p>
-    </div>
-    <div class="col-md-4">
-        <h3>Logistique Mobile</h3>
-        <p>Contrôle des entrées optimisé pour smartphone le jour J avec scan en temps réel.</p>
     </div>
 </div>
 
 <div class="text-center mt-2">
     <partial name="_ContactInfo" />
 </div>
+
+<style>
+    .btn-afro-gold {
+        background-color: #ffb703;
+        color: #121625;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .btn-afro-gold:hover {
+        background-color: #e5a400;
+        color: #121625;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255,183,3,0.3);
+    }
+    .hover-shadow {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .hover-shadow:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.1) !important;
+    }
+</style>
