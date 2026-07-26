@@ -1,6 +1,6 @@
 # 📚 Tutoriel Équipe AfroEvent — EF Core, Identity & aspnet-codegenerator
 
-> **Rédigé par : PERFECT_Dev (Architecte ANNOORA)**  
+> **Rédigé par : AfroEvent**  
 > **Projet :** AfroEvent — Plateforme Événementielle Africaine  
 > **Framework :** ASP.NET Core 10.0 MVC | EF Core 10 | SQLite | Bootstrap 5
 
@@ -38,7 +38,7 @@ git pull origin main
 
 ---
 
-# 🔵 CHARLES — Partie 2 : AppUser, Identity & Gestion des Rôles
+# 🔵 CHARLE LE GOAT — Partie 2 : AppUser, Identity & Gestion des Rôles
 
 ### Branche Git : `feature/identity-roles-auth`
 
@@ -241,7 +241,7 @@ git commit -m "feat(identity): AppUser, roles Admin/Organisateur/Participant, sc
 git push origin feature/identity-roles-auth
 ```
 
-Puis crée une **Pull Request** vers `main` sur GitHub pour qu'Amado valide.
+Puis crée une **Pull Request** vers `main` sur GitHub pour que je puisse valider.
 
 ---
 ---
@@ -250,7 +250,7 @@ Puis crée une **Pull Request** vers `main` sur GitHub pour qu'Amado valide.
 
 ### Branche Git : `feature/participant-tickets-persistence`
 
-> **Important :** Attends que Charles ait mergé sa branche (Partie 2) sur `main` avant de commencer !
+> **Important :** Attends que Charle le GOAT ait mergé sa branche (Partie 2) sur `main` avant de commencer !
 
 ---
 
@@ -324,12 +324,12 @@ Un fichier `AfroEvent.db` apparaît à la racine du projet. **C'est ta base de d
 
 ---
 
-### Étape 6 — (Optionnel) Visualiser la BDD
+### Étape 6 — Visualiser la BDD
 
-Télécharge **DB Browser for SQLite** (gratuit) :  
+Télécharge **DB Browser for SQLite** ou install l'extension **SQLite Viewer** dans VS Code (gratuit) :  
 👉 https://sqlitebrowser.org/dl/
 
-Ouvre `AfroEvent.db` et explore les tables générées :
+Ouvre `AfroEvent.db` avec DB Browser for SQLite ou l'extension SQLite Viewer dans VS Code et explore les tables générées :
 - `AspNetUsers` — Utilisateurs
 - `AspNetRoles` — Rôles
 - `Categories` — Catégories d'événements
@@ -389,4 +389,4 @@ Crée une **Pull Request** vers `main` sur GitHub.
 
 ---
 
-> 📌 **Questions ou problèmes ?** Contactez **Amado (Lead Dev)** ou ouvrez une issue sur le dépôt GitHub du projet.
+> 📌 **Questions ou problèmes ?** Contactez **Moi**
