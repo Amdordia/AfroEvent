@@ -10,6 +10,7 @@ using AfroEvent.Hubs;
 using AfroEvent.Models;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
+using QRCoder;
 
 namespace AfroEvent.Services.Implementations
 {
@@ -52,7 +53,9 @@ namespace AfroEvent.Services.Implementations
             }
 
             var ticketId = $"TKT-{DateTime.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
-            var note     = $"Nouveau billet émis pour \"{ev.Title}\" — {ticketId}";
+            var note     = ev.Price > 0
+                ? $"🎟️ Paiement confirmé ! Billet émis pour « {ev.Title} » (Pass {passType} - {ev.Price:N0} FCFA) — Réf: {ticketId}"
+                : $"🎉 Inscription confirmée ! Billet gratuit émis pour « {ev.Title} » — Réf: {ticketId}";
 
             // Hash QR Code sécurisé
             var qrHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(ticketId)));
@@ -250,8 +253,8 @@ namespace AfroEvent.Services.Implementations
             margin-bottom: 10px;
         }}
         .qr-box svg {{
-            width: 160px;
-            height: 160px;
+            width: 150px;
+            height: 150px;
         }}
         .qr-text {{
             font-size: 0.75rem;
@@ -347,37 +350,15 @@ namespace AfroEvent.Services.Implementations
 
         public string GenerateQrSvg(string value)
         {
-            var hash   = SHA256.HashData(Encoding.UTF8.GetBytes(value));
-            var cells  = new bool[21, 21];
-            var seed   = BitConverter.ToUInt32(hash, 0);
-            var random = new Random((int)seed);
-
-            for (int y = 0; y < 21; y++)
+            if (string.IsNullOrWhiteSpace(value))
             {
-                for (int x = 0; x < 21; x++)
-                {
-                    if ((x < 7 && y < 7) || (x > 13 && y < 7) || (x < 7 && y > 13))
-                    {
-                        cells[y, x] = true;
-                        continue;
-                    }
-                    cells[y, x] = random.Next(0, 100) < 55;
-                }
+                value = "AFROEVENT-TICKET";
             }
 
-            var sb = new StringBuilder();
-            sb.Append("<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 21 21'>");
-            sb.Append("<rect width='21' height='21' fill='white' />");
-            for (var y = 0; y < 21; y++)
-            {
-                for (var x = 0; x < 21; x++)
-                {
-                    if (!cells[y, x]) continue;
-                    sb.Append($"<rect x='{x}' y='{y}' width='1' height='1' fill='black' />");
-                }
-            }
-            sb.Append("</svg>");
-            return sb.ToString();
+            using var qrGenerator = new QRCodeGenerator();
+            using var qrCodeData  = qrGenerator.CreateQrCode(value, QRCodeGenerator.ECCLevel.M);
+            using var qrCode      = new SvgQRCode(qrCodeData);
+            return qrCode.GetGraphic(8);
         }
         public System.Collections.Generic.List<TicketResultViewModel> GetTicketsForParticipant(string participantUserId)
         {
