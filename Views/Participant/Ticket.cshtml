@@ -106,17 +106,24 @@
                     <!-- QR Code -->
                     <div class="col-12 col-md-5 text-center">
                         <div class="d-inline-block p-3 rounded-3 shadow-sm"
-                             style="background:#fff;border:2px solid #F1F5F9;">
+                             style="background:#fff; border:2px solid #F1F5F9; max-width: 180px;">
                             @if (!string.IsNullOrEmpty(qrSvg))
                             {
-                                @Html.Raw(qrSvg)
+                                <div style="width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                                    <style>
+                                        .ticket-qr-wrap svg { width: 100% !important; height: 100% !important; display: block; }
+                                    </style>
+                                    <div class="ticket-qr-wrap" style="width:100%; height:100%;">
+                                        @Html.Raw(qrSvg)
+                                    </div>
+                                </div>
                             }
                             else
                             {
-                                <i class="bi bi-qr-code" style="font-size:5rem;color:#CBD5E1;"></i>
+                                <i class="bi bi-qr-code" style="font-size:4rem;color:#CBD5E1;"></i>
                             }
                         </div>
-                        <p class="small text-muted mt-2 mb-0">
+                        <p class="small text-muted mt-2 mb-0" style="font-size:0.75rem;">
                             Scannez à l'entrée pour valider votre présence
                         </p>
                     </div>
