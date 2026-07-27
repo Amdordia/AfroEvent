@@ -1,72 +1,66 @@
 @model AfroEvent.Models.TicketEntity
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Supprimer le Billet";
 }
 
-<!DOCTYPE html>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="fw-bold mb-0 text-danger">🗑 Supprimer le Billet</h1>
+                <a asp-action="Index" class="btn btn-outline-dark">
+                    <i class="bi bi-arrow-left me-1"></i> Retour
+                </a>
+            </div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Delete</title>
-</head>
-<body>
+            <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">
+                <h5 class="fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Attention — Action irréversible</h5>
+                <p class="mb-0">Vous êtes sur le point de supprimer définitivement ce billet. Cette action ne peut pas être annulée.</p>
+            </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>TicketEntity</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QrCodeHash)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QrCodeHash)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPaid)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPaid)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPresent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPresent)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ScanDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ScanDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PurchaseDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PurchaseDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Event)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Event.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ParticipantId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ParticipantId)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+            <div class="card border-0 shadow rounded-4">
+                <div class="card-body p-4">
+                    <dl class="row g-2">
+                        <dt class="col-sm-4 text-muted">QR Code Hash</dt>
+                        <dd class="col-sm-8"><code>@Model.QrCodeHash</code></dd>
+
+                        <dt class="col-sm-4 text-muted">Événement</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-warning text-dark">@(Model.Event?.Title ?? "—")</span>
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Participant</dt>
+                        <dd class="col-sm-8"><code>@Model.ParticipantId</code></dd>
+
+                        <dt class="col-sm-4 text-muted">Statut</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsPaid)
+                            {
+                                <span class="badge bg-success">Payé</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Non payé</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Date d'achat</dt>
+                        <dd class="col-sm-8">@Model.PurchaseDate.ToString("dd/MM/yyyy HH:mm")</dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-light rounded-bottom-4 px-4 py-3">
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger fw-bold px-4">
+                                <i class="bi bi-trash me-2"></i>Confirmer la suppression
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>

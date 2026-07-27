@@ -1,69 +1,79 @@
 @model AfroEvent.Models.TicketEntity
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Détails du Billet";
 }
 
-<!DOCTYPE html>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="fw-bold mb-0">🎫 Détails du Billet</h1>
+                <a asp-action="Index" class="btn btn-outline-dark">
+                    <i class="bi bi-arrow-left me-1"></i> Retour à la liste
+                </a>
+            </div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
+            <div class="card border-0 shadow rounded-4">
+                <div class="card-header bg-dark text-white rounded-top-4 py-3 px-4">
+                    <h5 class="mb-0 fw-bold">Billet — <code class="text-warning">@Model.QrCodeHash</code></h5>
+                </div>
+                <div class="card-body p-4">
+                    <dl class="row g-3">
+                        <dt class="col-sm-4 text-muted">Événement</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-warning text-dark fs-6">@(Model.Event?.Title ?? "—")</span>
+                        </dd>
 
-<div>
-    <h4>TicketEntity</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QrCodeHash)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QrCodeHash)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPaid)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPaid)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPresent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPresent)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ScanDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ScanDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PurchaseDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PurchaseDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Event)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Event.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ParticipantId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ParticipantId)
-        </dd>
-    </dl>
+                        <dt class="col-sm-4 text-muted">Participant (ID)</dt>
+                        <dd class="col-sm-8"><code>@Model.ParticipantId</code></dd>
+
+                        <dt class="col-sm-4 text-muted">Date d'achat</dt>
+                        <dd class="col-sm-8">@Model.PurchaseDate.ToString("dd MMMM yyyy à HH:mm")</dd>
+
+                        <dt class="col-sm-4 text-muted">Statut paiement</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsPaid)
+                            {
+                                <span class="badge bg-success rounded-pill px-3 py-2">✓ Payé</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger rounded-pill px-3 py-2">✗ Non payé</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Présence confirmée</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsPresent)
+                            {
+                                <span class="badge bg-success rounded-pill px-3 py-2">✓ Présent(e)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary rounded-pill px-3 py-2">Non scanné</span>
+                            }
+                        </dd>
+
+                        @if (Model.ScanDate.HasValue)
+                        {
+                            <dt class="col-sm-4 text-muted">Date de scan</dt>
+                            <dd class="col-sm-8">@Model.ScanDate.Value.ToString("dd MMMM yyyy à HH:mm")</dd>
+                        }
+                    </dl>
+                </div>
+                <div class="card-footer bg-light rounded-bottom-4 px-4 py-3 d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold">
+                        <i class="bi bi-pencil me-1"></i> Modifier
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                        <i class="bi bi-trash me-1"></i> Supprimer
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary ms-auto">
+                        <i class="bi bi-list me-1"></i> Liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-</body>
-</html>

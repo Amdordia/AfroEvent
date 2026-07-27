@@ -1,73 +1,76 @@
 @model AfroEvent.Models.TicketEntity
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Modifier le Billet";
 }
 
-<!DOCTYPE html>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="fw-bold mb-0">✏️ Modifier le Billet</h1>
+                <a asp-action="Index" class="btn btn-outline-dark">
+                    <i class="bi bi-arrow-left me-1"></i> Retour
+                </a>
+            </div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Edit</title>
-</head>
-<body>
+            <div class="card border-0 shadow rounded-4">
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="PurchaseDate" />
 
-<h4>TicketEntity</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="QrCodeHash" class="control-label"></label>
-                <input asp-for="QrCodeHash" class="form-control" />
-                <span asp-validation-for="QrCodeHash" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="EventId" class="form-label fw-semibold">Événement</label>
+                            <select asp-for="EventId" class="form-select" asp-items="ViewBag.EventId"></select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ParticipantId" class="form-label fw-semibold">Participant (ID utilisateur)</label>
+                            <input asp-for="ParticipantId" class="form-control" />
+                            <span asp-validation-for="ParticipantId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="QrCodeHash" class="form-label fw-semibold">QR Code Hash</label>
+                            <input asp-for="QrCodeHash" class="form-control font-monospace" readonly />
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch p-3 border rounded-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsPaid" role="switch" id="IsPaid" />
+                                    <label class="form-check-label fw-semibold" for="IsPaid">Billet payé</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch p-3 border rounded-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsPresent" role="switch" id="IsPresent" />
+                                    <label class="form-check-label fw-semibold" for="IsPresent">Participant présent</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ScanDate" class="form-label fw-semibold">Date de scan</label>
+                            <input asp-for="ScanDate" class="form-control" type="datetime-local" />
+                            <span asp-validation-for="ScanDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning fw-bold px-4">
+                                <i class="bi bi-save me-2"></i>Sauvegarder
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPaid" /> @Html.DisplayNameFor(model => model.IsPaid)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPresent" /> @Html.DisplayNameFor(model => model.IsPresent)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ScanDate" class="control-label"></label>
-                <input asp-for="ScanDate" class="form-control" />
-                <span asp-validation-for="ScanDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PurchaseDate" class="control-label"></label>
-                <input asp-for="PurchaseDate" class="form-control" />
-                <span asp-validation-for="PurchaseDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventId" class="control-label"></label>
-                <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId"></select>
-                <span asp-validation-for="EventId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ParticipantId" class="control-label"></label>
-                <input asp-for="ParticipantId" class="form-control" />
-                <span asp-validation-for="ParticipantId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-</body>
-</html>

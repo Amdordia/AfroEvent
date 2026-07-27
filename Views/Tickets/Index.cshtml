@@ -1,79 +1,102 @@
 @model IEnumerable<AfroEvent.Models.TicketEntity>
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Gestion des Billets";
 }
 
-<!DOCTYPE html>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">🎫 Billets Vendus</h1>
+            <p class="text-muted mb-0">Vue d'ensemble de tous les billets enregistrés.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-warning fw-bold">
+            <i class="bi bi-plus-circle me-2"></i>Nouveau Billet
+        </a>
+    </div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.QrCodeHash)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPaid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPresent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ScanDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PurchaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Event)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ParticipantId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.QrCodeHash)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPaid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPresent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ScanDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PurchaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParticipantId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-</body>
-</html>
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="py-3 ps-4">QR Code Hash</th>
+                            <th class="py-3">Événement</th>
+                            <th class="py-3">Participant</th>
+                            <th class="py-3">Date d'achat</th>
+                            <th class="py-3 text-center">Payé</th>
+                            <th class="py-3 text-center">Présent</th>
+                            <th class="py-3">Date de Scan</th>
+                            <th class="py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <code class="text-dark small">@Html.DisplayFor(m => item.QrCodeHash)</code>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">
+                                        @(item.Event?.Title ?? "—")
+                                    </span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">@Html.DisplayFor(m => item.ParticipantId)</small>
+                                </td>
+                                <td>
+                                    @item.PurchaseDate.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+                                <td class="text-center">
+                                    @if (item.IsPaid)
+                                    {
+                                        <span class="badge bg-success rounded-pill">✓ Payé</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger rounded-pill">✗ Impayé</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (item.IsPresent)
+                                    {
+                                        <span class="badge bg-success rounded-pill">✓ Présent</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill">En attente</span>
+                                    }
+                                </td>
+                                <td>
+                                    @(item.ScanDate.HasValue ? item.ScanDate.Value.ToString("dd/MM/yyyy HH:mm") : "—")
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Détails">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-ticket-perforated" style="font-size: 3rem;"></i>
+                    <p class="mt-3">Aucun billet enregistré pour l'instant.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

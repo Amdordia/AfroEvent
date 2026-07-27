@@ -35,10 +35,11 @@ builder.Services.AddSession(options =>
 });
 
 // Register AfroEvent Business Services (Couche Métier)
-builder.Services.AddSingleton<AfroEvent.Services.Interfaces.IEventService, AfroEvent.Services.Implementations.EventService>();
-builder.Services.AddSingleton<AfroEvent.Services.Interfaces.IOrganizerService, AfroEvent.Services.Implementations.OrganizerService>();
-builder.Services.AddSingleton<AfroEvent.Services.Interfaces.IParticipantService, AfroEvent.Services.Implementations.ParticipantService>();
-builder.Services.AddSingleton<AfroEvent.Services.Interfaces.IAdminService, AfroEvent.Services.Implementations.AdminService>();
+// Scoped = une instance par requête HTTP (obligatoire car les services dépendent du DbContext Scoped)
+builder.Services.AddScoped<AfroEvent.Services.Interfaces.IEventService, AfroEvent.Services.Implementations.EventService>();
+builder.Services.AddScoped<AfroEvent.Services.Interfaces.IOrganizerService, AfroEvent.Services.Implementations.OrganizerService>();
+builder.Services.AddScoped<AfroEvent.Services.Interfaces.IParticipantService, AfroEvent.Services.Implementations.ParticipantService>();
+builder.Services.AddScoped<AfroEvent.Services.Interfaces.IAdminService, AfroEvent.Services.Implementations.AdminService>();
 
 var app = builder.Build();
 
