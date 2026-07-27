@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AfroEvent.ViewModels;
 
@@ -8,6 +9,7 @@ namespace AfroEvent.Controllers
     /// Le flux d'inscription complet (Inscription → Paiement → Billet QR) 
     /// est géré par ParticipantController.
     /// </summary>
+    [Authorize]
     public class ConferenceController : Controller
     {
         /// <summary>

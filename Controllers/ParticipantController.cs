@@ -1,25 +1,40 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AfroEvent.Models;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
 
 namespace AfroEvent.Controllers
 {
+    [Authorize]
     public class ParticipantController : Controller
     {
         private readonly IParticipantService _participantService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ParticipantController(IParticipantService participantService)
+        public ParticipantController(IParticipantService participantService, UserManager<AppUser> userManager)
         {
             _participantService = participantService;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public IActionResult SInscrire(string nom)
+        public async Task<IActionResult> SInscrire(string nom)
         {
             ViewBag.EventName = nom ?? "Événement";
             var model = new ParticipantInscriptionViewModel();
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var fullName = $"{user.FirstName} {user.LastName}".Trim();
+                model.NomComplet = !string.IsNullOrWhiteSpace(fullName) ? fullName : (user.UserName ?? string.Empty);
+                model.Email = user.Email ?? string.Empty;
+            }
+
             return View(model);
         }
 
@@ -34,7 +49,7 @@ namespace AfroEvent.Controllers
                 return View(model);
             }
 
-            var eventName = _participantService.ProcessRegistration(nom, model);
+            var eventName = _participantService.ProcessRegistration(nom ?? "Événement", model);
 
             TempData["ParticipantName"] = model.NomComplet;
             TempData["ParticipantEmail"] = model.Email;

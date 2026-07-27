@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
@@ -91,6 +92,7 @@ public class EventsController : Controller
 
     // POST: /Events/Reserve/5
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Reserve(Guid id)
     {
