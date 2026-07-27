@@ -1,67 +1,192 @@
-﻿@page
+@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Créer un compte";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Créer un compte — AfroEvent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body style="background:linear-gradient(135deg,#0D101B 0%,#111622 55%,#1C1209 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;">
 
-<h1>@ViewData["Title"]</h1>
+    <div style="width:100%;max-width:480px;">
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
+        <!-- Logo -->
+        <div class="text-center mb-5">
+            <a href="/" class="text-decoration-none">
+                <i class="bi bi-ticket-perforated-fill text-warning" style="font-size:2.5rem;"></i>
+                <div class="fw-bold mt-2" style="font-size:1.5rem;color:#fff;">
+                    Afro<span style="color:#FFB703;">Event</span>
+                </div>
+            </a>
+            <p class="text-white-50 small mt-2 mb-0">Créez votre compte gratuitement</p>
+        </div>
+
+        <!-- Card inscription -->
+        <div class="rounded-4 p-4 p-md-5"
+             style="background:rgba(255,255,255,0.04);
+                    backdrop-filter:blur(12px);
+                    border:1px solid rgba(255,255,255,0.08);">
+
+            <h1 class="fw-bold text-white mb-1" style="font-size:1.5rem;">Rejoignez AfroEvent</h1>
+            <p class="text-white-50 small mb-4">Inscrivez-vous pour découvrir et participer aux événements.</p>
+
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger py-2 small rounded-3 mb-3" role="alert">
+                </div>
+
+                <!-- Nom complet -->
+                <div class="mb-3">
+                    <label asp-for="Input.NomComplet" class="form-label text-white-50 small fw-semibold">
+                        <i class="bi bi-person me-1"></i>Nom complet
+                    </label>
+                    <input asp-for="Input.NomComplet"
+                           class="form-control rounded-3 auth-input"
+                           placeholder="Ex : Amadou Diallo" />
+                    <span asp-validation-for="Input.NomComplet" class="text-danger small"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label text-white-50 small fw-semibold">
+                        <i class="bi bi-envelope me-1"></i>Adresse e-mail
+                    </label>
+                    <input asp-for="Input.Email"
+                           class="form-control rounded-3 auth-input"
+                           autocomplete="username"
+                           placeholder="vous@exemple.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                </div>
+
+                <!-- Mot de passe -->
+                <div class="mb-3">
+                    <label asp-for="Input.Password" class="form-label text-white-50 small fw-semibold">
+                        <i class="bi bi-lock me-1"></i>Mot de passe
+                    </label>
+                    <input asp-for="Input.Password"
+                           class="form-control rounded-3 auth-input"
+                           autocomplete="new-password"
+                           placeholder="Min. 6 caractères" />
+                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                </div>
+
+                <!-- Confirmation -->
+                <div class="mb-4">
+                    <label asp-for="Input.ConfirmPassword" class="form-label text-white-50 small fw-semibold">
+                        <i class="bi bi-shield-check me-1"></i>Confirmer le mot de passe
+                    </label>
+                    <input asp-for="Input.ConfirmPassword"
+                           class="form-control rounded-3 auth-input"
+                           autocomplete="new-password"
+                           placeholder="Répétez votre mot de passe" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                </div>
+
+                <!-- Option Organisateur -->
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" asp-for="Input.DemandeOrganisateur" id="demandeOrgSwitch" />
+                        <label class="form-check-label text-white small" for="demandeOrgSwitch">
+                            Je souhaite organiser des événements
+                        </label>
                     </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
+                </div>
+
+                <!-- Nom de l'organisation (masqué par défaut) -->
+                <div class="mb-4 d-none" id="orgNameContainer">
+                    <label asp-for="Input.NomOrganisation" class="form-label text-white-50 small fw-semibold">
+                        <i class="bi bi-building me-1"></i>Nom de votre organisation / entreprise
+                    </label>
+                    <input asp-for="Input.NomOrganisation"
+                           class="form-control rounded-3 auth-input"
+                           placeholder="Ex : Annoora Events" />
+                    <span asp-validation-for="Input.NomOrganisation" class="text-danger small"></span>
+                </div>
+
+                <!-- Bouton inscription -->
+                <div class="d-grid mb-4">
+                    <button id="registerSubmit" type="submit"
+                            class="btn btn-afro-gold btn-lg rounded-3 fw-bold py-3">
+                        <i class="bi bi-person-plus-fill me-2"></i>Créer mon compte
+                    </button>
+                </div>
+
+                <!-- Déjà inscrit -->
+                <div class="text-center">
+                    <span class="text-white-50 small">Déjà un compte ?</span>
+                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl"
+                       class="fw-bold text-decoration-none ms-1"
+                       style="color:#FFB703;">
+                        Se connecter
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Retour au site -->
+        <div class="text-center mt-4">
+            <a href="/" class="text-white-50 small text-decoration-none">
+                <i class="bi bi-arrow-left me-1"></i>Retour au site
+            </a>
+        </div>
+
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const switchEl = document.getElementById("demandeOrgSwitch");
+            const containerEl = document.getElementById("orgNameContainer");
+
+            function toggleOrgName() {
+                if (switchEl && containerEl) {
+                    if (switchEl.checked) {
+                        containerEl.classList.remove("d-none");
+                    } else {
+                        containerEl.classList.add("d-none");
+                    }
                 }
             }
-        </section>
-    </div>
-</div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+            if (switchEl) {
+                switchEl.addEventListener("change", toggleOrgName);
+                toggleOrgName(); // Initial check
+            }
+        });
+    </script>
+
+    <style>
+        .auth-input {
+            background: rgba(255,255,255,0.06) !important;
+            border-color: rgba(255,255,255,0.12) !important;
+            color: #fff !important;
+        }
+        .auth-input:focus {
+            background: rgba(255,255,255,0.09) !important;
+            border-color: #FFB703 !important;
+            box-shadow: 0 0 0 3px rgba(255,183,3,0.18) !important;
+            color: #fff !important;
+        }
+        .auth-input::placeholder { color: rgba(255,255,255,0.25); }
+        .form-check-input { background-color: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+        .form-check-input:checked { background-color: #FFB703; border-color: #FFB703; }
+    </style>
+</body>
+</html>

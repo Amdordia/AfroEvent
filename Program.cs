@@ -45,10 +45,11 @@ builder.Services.AddSession(options =>
 });
 
 // Register AfroEvent Business Services (Couche Métier)
-// Scoped = une instance par requête HTTP (obligatoire car les services dépendent du DbContext Scoped)
+// Scoped = une instance par requête HTTP (compatibilité DbContext + UserManager Identity)
 builder.Services.AddScoped<AfroEvent.Services.Interfaces.IEventService, AfroEvent.Services.Implementations.EventService>();
 builder.Services.AddScoped<AfroEvent.Services.Interfaces.IOrganizerService, AfroEvent.Services.Implementations.OrganizerService>();
 builder.Services.AddScoped<AfroEvent.Services.Interfaces.IParticipantService, AfroEvent.Services.Implementations.ParticipantService>();
+// AdminService dépend de UserManager<AppUser> (Scoped) → doit être Scoped
 builder.Services.AddScoped<AfroEvent.Services.Interfaces.IAdminService, AfroEvent.Services.Implementations.AdminService>();
 
 var app = builder.Build();

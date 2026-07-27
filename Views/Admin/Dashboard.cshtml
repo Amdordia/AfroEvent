@@ -1,129 +1,162 @@
 @model AfroEvent.ViewModels.AdminDashboardViewModel
 @{
     Layout = null;
+    var adminName  = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "Administrateur";
+    var adminEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+                     ?? User.Identity?.Name ?? "admin@afroevent.ml";
+    var initials   = adminEmail.Length > 0 ? adminEmail[0].ToString().ToUpper() : "A";
 }
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Administrateur - AfroEvent</title>
+    <title>Tableau de Bord Admin — AfroEvent</title>
+    <meta name="description" content="Panneau d'administration AfroEvent — supervision, organisateurs et finances." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="/css/dashboard.css" asp-append-version="true" />
-
 </head>
-<body>
+<body class="dashboard-body">
 
-    <aside class="admin-sidebar">
-        <div class="sidebar-brand d-flex align-items-center gap-2">
-            <span class="fs-4">🎫</span>
+    <!-- ══ SIDEBAR ═════════════════════════════════════════════ -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <span class="sidebar-brand-logo">🎫</span>
             <div>
-                <span class="fw-bold text-white fs-5">Afro<span style="color: #ffb800;">Event</span></span>
-                <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem; vertical-align: middle;">ADMIN</span>
+                <div class="sidebar-brand-name">Afro<span>Event</span></div>
+                <span class="badge bg-warning text-dark" style="font-size:0.6rem;border-radius:4px;padding:2px 6px;">ADMIN</span>
             </div>
         </div>
 
         <div class="sidebar-menu">
-            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <div class="sidebar-section-label">Navigation</div>
+            <div class="nav flex-column" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
-                <button class="nav-link active text-start" id="v-pills-overview-tab" data-bs-toggle="pill" data-bs-target="#v-pills-overview" type="button" role="tab" aria-controls="v-pills-overview" aria-selected="true">
-                    <span><i class="bi bi-grid-1x2-fill main-icon"></i> Vue d'ensemble</span>
+                <button class="nav-link active" id="v-pills-overview-tab"
+                        data-bs-toggle="pill" data-bs-target="#v-pills-overview"
+                        type="button" role="tab" aria-selected="true">
+                    <i class="bi bi-grid-1x2-fill nav-icon"></i>
+                    <span class="nav-label">Vue d'ensemble</span>
                 </button>
 
-                <button class="nav-link text-start" id="v-pills-organisateurs-tab" data-bs-toggle="pill" data-bs-target="#v-pills-organisateurs" type="button" role="tab" aria-controls="v-pills-organisateurs" aria-selected="false">
-                    <span><i class="bi bi-people-fill main-icon"></i> Organisateurs</span>
+                <button class="nav-link" id="v-pills-organisateurs-tab"
+                        data-bs-toggle="pill" data-bs-target="#v-pills-organisateurs"
+                        type="button" role="tab" aria-selected="false">
+                    <i class="bi bi-people-fill nav-icon"></i>
+                    <span class="nav-label">Organisateurs</span>
                     @if (Model.OrganisateursEnAttenteCount > 0)
                     {
-                        <span class="badge bg-danger rounded-pill">@Model.OrganisateursEnAttenteCount</span>
+                        <span class="sidebar-nav-badge">@Model.OrganisateursEnAttenteCount</span>
                     }
                 </button>
 
-                <button class="nav-link text-start" id="v-pills-finances-tab" data-bs-toggle="pill" data-bs-target="#v-pills-finances" type="button" role="tab" aria-controls="v-pills-finances" aria-selected="false">
-                    <span><i class="bi bi-cash-stack main-icon"></i> Finances & Billets</span>
+                <button class="nav-link" id="v-pills-finances-tab"
+                        data-bs-toggle="pill" data-bs-target="#v-pills-finances"
+                        type="button" role="tab" aria-selected="false">
+                    <i class="bi bi-cash-stack nav-icon"></i>
+                    <span class="nav-label">Finances & Billets</span>
                 </button>
             </div>
+
+            <div class="sidebar-section-label mt-3">Accès rapide</div>
+            <a class="nav-link text-decoration-none" href="/Events">
+                <i class="bi bi-calendar-event nav-icon"></i>
+                <span class="nav-label">Tous les événements</span>
+            </a>
         </div>
 
+        <!-- Footer sidebar : vrai email + déconnexion -->
         <div class="sidebar-footer">
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <div class="sidebar-user-avatar">@initials</div>
                 <div class="overflow-hidden">
-                    <h6 class="text-white mb-0 text-truncate" style="font-size: 0.85rem;">Administrateur</h6>
-                    <small class="text-dark-emphasis d-block text-truncate" style="font-size: 0.75rem;">admin@afroevent.com</small>
+                    <div class="sidebar-user-name text-truncate" title="@adminName">@adminName</div>
+                    <div class="sidebar-user-email text-truncate" title="@adminEmail">@adminEmail</div>
                 </div>
             </div>
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
+                <button type="submit" class="sidebar-logout-btn">
+                    <i class="bi bi-box-arrow-right"></i> Se déconnecter
+                </button>
+            </form>
         </div>
     </aside>
 
-
+    <!-- ══ CONTENU PRINCIPAL ════════════════════════════════════ -->
     <main class="main-content">
 
+        <!-- Header -->
         <header class="content-header">
-            <div class="d-flex align-items-center">
-                <h4 class="text-white fw-bold mb-0 me-3">Tableau de Bord Admin</h4>
-                <span class="badge bg-warning text-dark fw-semibold">AfroEvent Workspace</span>
-            </div>
+            <!-- Bouton hamburger (mobile) -->
+            <button class="btn btn-link text-white p-0 d-lg-none me-3"
+                    onclick="document.getElementById('adminSidebar').classList.toggle('sidebar-open')"
+                    aria-label="Menu">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+            <h4 class="content-header-title">Tableau de Bord Administrateur</h4>
             <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-dark-outline btn-sm text-white" onclick="window.location.reload();">
-                    <i class="bi bi-arrow-clockwise me-1"></i> Actualiser
+                <button class="btn btn-dark-outline btn-sm" onclick="window.location.reload()">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Actualiser
                 </button>
                 <a class="btn btn-outline-warning btn-sm fw-semibold" href="/">
-                    <i class="bi bi-house me-1"></i> Aller au site
+                    <i class="bi bi-house me-1"></i>Site public
                 </a>
             </div>
         </header>
 
-
+        <!-- Body -->
         <div class="content-body">
 
-            @if (TempData["SuccesMessage"] != null)
+            <!-- Alertes TempData (clé unifiée : SuccessMessage) -->
+            @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert" style="border-left: 4px solid #198754 !important;">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
-                        <div>@TempData["SuccesMessage"]</div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-success alert-dismissible fade show animate-fadein" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }
             @if (TempData["WarningMessage"] != null)
             {
-                <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert" style="border-left: 4px solid #ffc107 !important;">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-exclamation-triangle-fill me-2 fs-5 text-warning"></i>
-                        <div>@TempData["WarningMessage"]</div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-warning alert-dismissible fade show animate-fadein" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["WarningMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show animate-fadein" role="alert">
+                    <i class="bi bi-x-circle-fill me-2"></i>@TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }
 
+            <!-- Onglets -->
             <div class="tab-content" id="v-pills-tabContent">
-                
-                <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel" aria-labelledby="v-pills-overview-tab">
+
+                <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel">
                     @await Html.PartialAsync("_OverviewTab", Model)
                 </div>
 
-                <div class="tab-pane fade" id="v-pills-organisateurs" role="tabpanel" aria-labelledby="v-pills-organisateurs-tab">
+                <div class="tab-pane fade" id="v-pills-organisateurs" role="tabpanel">
                     @await Html.PartialAsync("_OrganisateursTab", Model)
                 </div>
 
-                <div class="tab-pane fade" id="v-pills-finances" role="tabpanel" aria-labelledby="v-pills-finances-tab">
+                <div class="tab-pane fade" id="v-pills-finances" role="tabpanel">
                     @await Html.PartialAsync("_FinancesTab", Model)
                 </div>
 
             </div>
         </div>
-
-        <!-- <footer class="py-3 px-4 text-center text-muted bg-white border-top mt-auto" style="font-size: 0.8rem;">
-            &copy; @DateTime.Now.Year - AfroEvent | Conçu avec excellence pour l'administration de la plateforme.
-        </footer> -->
     </main>
 
     <script src="/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

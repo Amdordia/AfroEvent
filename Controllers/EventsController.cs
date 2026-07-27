@@ -1,11 +1,16 @@
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
 
 namespace AfroEvent.Controllers;
 
+/// <summary>
+/// Gestion des événements (CRUD). Lecture publique, création/modification réservées aux organisateurs.
+/// </summary>
 public class EventsController : Controller
 {
     private readonly IEventService _eventService;
@@ -15,77 +20,94 @@ public class EventsController : Controller
         _eventService = eventService;
     }
 
-    // GET: /Events
+    // GET: /Events — Accessible à tous
     public IActionResult Index()
     {
         var events = _eventService.GetAllEvents();
         return View(events);
     }
 
-    // GET: /Events/Details/5
+    // GET: /Events/Details/5 — Accessible à tous
     public IActionResult Details(Guid id)
     {
         var eventModel = _eventService.GetEventById(id);
+        if (eventModel == null)
+        {
+            TempData["ErrorMessage"] = "Événement introuvable.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        ViewBag.AvailablePlaces = _eventService.GetAvailablePlaces(id);
         return View(eventModel);
     }
 
-    // GET: /Events/Create
+    // GET: /Events/Create — Organisateur uniquement
     [HttpGet]
+    [Authorize(Roles = "Organisateur")]
     public IActionResult Create()
     {
         var model = new EventFormViewModel
         {
             StartDate = DateTime.Now.AddDays(14).Date.AddHours(9),
-            EndDate = DateTime.Now.AddDays(14).Date.AddHours(18),
-            AgendaItems = new System.Collections.Generic.List<AgendaItemViewModel>
-            {
-                new AgendaItemViewModel { Id = 1, Title = "Accueil & Inscriptions", StartTime = DateTime.Now.AddDays(14).Date.AddHours(9), EndTime = DateTime.Now.AddDays(14).Date.AddHours(10) },
-                new AgendaItemViewModel { Id = 2, Title = "Keynote d'ouverture", StartTime = DateTime.Now.AddDays(14).Date.AddHours(10), EndTime = DateTime.Now.AddDays(14).Date.AddHours(12) }
-            },
-            Speakers = new System.Collections.Generic.List<SpeakerViewModel>
-            {
-                new SpeakerViewModel { Id = 1, FullName = "Dr. Seydou Keita", Biography = "Expert IA & Solutions Cloud", ProfileImageUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" }
-            }
+            EndDate   = DateTime.Now.AddDays(14).Date.AddHours(18),
         };
-
         return View(model);
     }
 
     // POST: /Events/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Organisateur")]
     public IActionResult Create(EventFormViewModel model)
     {
         if (!ModelState.IsValid)
-        {
             return View(model);
-        }
 
-        _eventService.CreateEvent(model);
-        TempData["SuccessMessage"] = $"L'événement '{model.Title}' a été créé avec succès !";
+        var organizerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+        _eventService.CreateEvent(model, organizerId);
+        TempData["SuccessMessage"] = $"L'événement \"{model.Title}\" a été créé avec succès !";
         return RedirectToAction("Dashboard", "Organizer");
     }
 
     // GET: /Events/Edit/5
     [HttpGet]
+    [Authorize(Roles = "Organisateur")]
     public IActionResult Edit(Guid id)
     {
         var eventModel = _eventService.GetEventById(id);
+        if (eventModel == null)
+        {
+            TempData["ErrorMessage"] = "Événement introuvable.";
+            return RedirectToAction(nameof(Index));
+        }
         return View(eventModel);
     }
 
     // POST: /Events/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Organisateur")]
     public IActionResult Edit(Guid id, EventFormViewModel model)
     {
         if (!ModelState.IsValid)
-        {
             return View(model);
-        }
 
         _eventService.UpdateEvent(id, model);
-        TempData["SuccessMessage"] = $"L'événement '{model.Title}' a été mis à jour avec succès !";
+        TempData["SuccessMessage"] = $"L'événement \"{model.Title}\" a été mis à jour.";
+        return RedirectToAction("Events", "Organizer");
+    }
+
+    // POST: /Events/Delete/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Organisateur")]
+    public IActionResult Delete(Guid id)
+    {
+        var evt = _eventService.GetEventById(id);
+        _eventService.DeleteEvent(id);
+        TempData["SuccessMessage"] = evt != null
+            ? $"L'événement \"{evt.Title}\" a été supprimé."
+            : "Événement supprimé.";
         return RedirectToAction("Events", "Organizer");
     }
 
@@ -95,9 +117,13 @@ public class EventsController : Controller
     public async Task<IActionResult> Reserve(Guid id)
     {
         var eventModel = _eventService.GetEventById(id);
-        await _eventService.ReservePlaceAsync(id);
+        if (eventModel == null)
+        {
+            TempData["ErrorMessage"] = "Événement introuvable.";
+            return RedirectToAction(nameof(Index));
+        }
 
-        TempData["Message"] = "Votre réservation a été prise en compte.";
+        await _eventService.ReservePlaceAsync(id);
         return RedirectToAction("SInscrire", "Participant", new { nom = eventModel.Title });
     }
 }

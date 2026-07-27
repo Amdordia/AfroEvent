@@ -5,156 +5,168 @@
     {
         Context.Session.Remove("PaymentNotification");
     }
+    var isAdmin = User.IsInRole("Admin");
+    var isOrg   = User.IsInRole("Organisateur");
+    var isAuth  = User.Identity?.IsAuthenticated == true;
 }
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AfroEvent</title>
-    
+    <title>@ViewData["Title"] — AfroEvent</title>
+    <meta name="description" content="AfroEvent — La plateforme centralisée d'organisation et de billetterie d'événements pour l'écosystème africain." />
+
+    <!-- Google Fonts : Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
     <!-- Bootstrap CSS & Icons -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <!-- Leaflet.js (OpenStreetMap) CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    
-    <!-- Custom Site CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+
+    <!-- Leaflet.js (OpenStreetMap) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- AfroEvent Design System -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    
-    <style>
-        :root {
-            --afro-gold: #ffb703;
-            --afro-dark: #121625;
-            --afro-primary: #f77f00;
-            --afro-accent: #d62828;
-        }
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-        .navbar-afro {
-            background-color: var(--afro-dark) !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-        .btn-afro {
-            background-color: var(--afro-primary);
-            color: #fff;
-            font-weight: 600;
-            border: none;
-            transition: all 0.3s ease;
-        }
-        .btn-afro:hover {
-            background-color: #e06c00;
-            color: #fff;
-            transform: translateY(-1px);
-        }
-        .btn-afro-gold {
-            background-color: var(--afro-gold);
-            color: var(--afro-dark);
-            font-weight: 700;
-            border: none;
-        }
-        .btn-afro-gold:hover {
-            background-color: #e5a400;
-            color: var(--afro-dark);
-        }
-        .badge-realtime {
-            animation: pulse-live 2s infinite;
-        }
-        @@keyframes pulse-live {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="d-flex flex-column min-vh-100">
+
     @if (!string.IsNullOrEmpty(layoutNotif))
     {
         <span id="sessionNotificationHelper" data-message="@layoutNotif" style="display:none;"></span>
     }
+
+    <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-afro py-3">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-afro py-2">
             <div class="container">
-                <a class="navbar-brand fw-bold fs-4 text-warning d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-ticket-perforated-fill text-warning fs-3"></i>
-                    <span>Afro<span class="text-light">Event</span></span>
+
+                <!-- Brand -->
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-decoration-none"
+                   asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-ticket-perforated-fill text-warning fs-4"></i>
+                    <span style="color:#fff; font-size:1.15rem;">
+                        Afro<span style="color:#FFB703;">Event</span>
+                    </span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+                <button class="navbar-toggler border-0" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                        aria-controls="navbarMain" aria-expanded="false" aria-label="Menu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarMain">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <!-- Navigation principale -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light px-3" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Accueil</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-1"></i>Accueil
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light px-3" asp-controller="Events" asp-action="Index"><i class="bi bi-calendar-event me-1"></i>Événements</a>
+                            <a class="nav-link" asp-controller="Events" asp-action="Index">
+                                <i class="bi bi-calendar-event me-1"></i>Événements
+                            </a>
                         </li>
-                        @if (!User.IsInRole("Admin") && !User.IsInRole("Organisateur"))
+
+                        @* Onglet Participant : uniquement pour les utilisateurs authentifiés non-org non-admin *@
+                        @if (isAuth && !isAdmin && !isOrg)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-warning fw-semibold px-3" asp-controller="Participant" asp-action="SInscrire"><i class="bi bi-person-plus me-1"></i>Inscription participant</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-warning fw-bold px-3" asp-area="" asp-controller="Admin" asp-action="Dashboard">
-                                    <i class="bi bi-shield-lock-fill me-1"></i> Dashboard Admin
+                                <a class="nav-link" asp-controller="Participant" asp-action="MesBillets">
+                                    <i class="bi bi-ticket me-1"></i>Mes billets
                                 </a>
                             </li>
                         }
                     </ul>
-                    
-                    <div class="d-flex align-items-center gap-3">
-                        <!-- Cloche de Notifications Participant -->
-                        @if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin"))
+
+                    <!-- Actions à droite -->
+                    <div class="d-flex align-items-center gap-2">
+
+                        @* Cloche notifications (tous les authentifiés sauf admin qui a son panneau) *@
+                        @if (isAuth)
                         {
-                            <div class="dropdown">
-                                <a class="nav-link position-relative text-light" href="#" id="notifToggle" role="button" onclick="toggleNotifications(event)">
-                                    <i class="bi bi-bell-fill text-warning" style="font-size:1.2rem;"></i>
-                                    <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;">0</span>
-                                </a>
-                                <div id="notifDropdown" class="dropdown-menu dropdown-menu-end p-3 shadow-lg" style="min-width:300px; display:none;">
-                                    <h6 class="fw-bold border-bottom pb-2 mb-2"><i class="bi bi-bell me-2"></i>Notifications</h6>
-                                    <div id="notifItems">
-                                        <div class="text-muted small">Aucune notification</div>
+                            <div class="position-relative">
+                                <button class="btn btn-link text-light p-2 position-relative"
+                                        id="notifToggle"
+                                        onclick="toggleNotifications(event)"
+                                        aria-label="Notifications">
+                                    <i class="bi bi-bell-fill" style="font-size:1.1rem;color:#FFB703;"></i>
+                                    <span id="notifBadge"
+                                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                          style="display:none; font-size:0.6rem;">0</span>
+                                </button>
+                                <div id="notifDropdown"
+                                     class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0"
+                                     style="min-width:320px; display:none; border-radius:0.875rem; overflow:hidden;">
+                                    <div class="px-3 py-2 border-bottom d-flex justify-content-between align-items-center"
+                                         style="background:#F8FAFC;">
+                                        <span class="fw-bold small text-dark">
+                                            <i class="bi bi-bell me-1 text-warning"></i>Notifications
+                                        </span>
+                                        <button class="btn btn-link btn-sm text-muted p-0" onclick="markAllAsRead()">
+                                            Tout lire
+                                        </button>
                                     </div>
-                                    <div class="text-center mt-2 border-top pt-2"><a href="/Home/Index" class="small text-decoration-none text-primary">Voir toutes</a></div>
+                                    <div id="notifItems" style="max-height:280px; overflow-y:auto;">
+                                        <div class="text-muted small text-center py-4">Aucune notification</div>
+                                    </div>
                                 </div>
                             </div>
                         }
 
-                        <!-- Navigation Espace Organisateur -->
-                        @if (User.IsInRole("Organisateur"))
+                        @* Dashboard Organisateur *@
+                        @if (isOrg)
                         {
                             <div class="dropdown">
-                                <button class="btn btn-outline-warning dropdown-toggle fw-semibold" type="button" id="organizerMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-speedometer2 me-1"></i> Espace Organisateur
+                                <button class="btn btn-outline-warning btn-sm fw-semibold dropdown-toggle px-3"
+                                        type="button" id="orgMenu"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-speedometer2 me-1"></i>Espace Org.
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="organizerMenu">
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3"
+                                    style="min-width:220px;"
+                                    aria-labelledby="orgMenu">
                                     <li>
-                                        <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Dashboard">
-                                            <i class="bi bi-grid-1x2-fill text-primary me-2"></i> Tableau de bord (Dashboard)
+                                        <a class="dropdown-item py-2"
+                                           asp-controller="Organizer" asp-action="Dashboard">
+                                            <i class="bi bi-grid-1x2-fill text-primary me-2"></i>Tableau de bord
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Events">
-                                            <i class="bi bi-kanban-fill text-info me-2"></i> Gérer mes événements
+                                        <a class="dropdown-item py-2"
+                                           asp-controller="Organizer" asp-action="Events">
+                                            <i class="bi bi-kanban-fill text-info me-2"></i>Mes événements
                                         </a>
                                     </li>
+                                    <li><hr class="dropdown-divider my-1"></li>
                                     <li>
-                                        <a class="dropdown-item py-2 fw-semibold text-success" asp-controller="Events" asp-action="Create">
-                                            <i class="bi bi-plus-circle-fill me-2"></i> + Créer un événement
+                                        <a class="dropdown-item py-2 text-success fw-semibold"
+                                           asp-controller="Events" asp-action="Create">
+                                            <i class="bi bi-plus-circle-fill me-2"></i>Créer un événement
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                         }
+
+                        @* Dashboard Admin *@
+                        @if (isAdmin)
+                        {
+                            <a class="btn btn-warning btn-sm fw-bold px-3"
+                               asp-controller="Admin" asp-action="Dashboard">
+                                <i class="bi bi-shield-fill-check me-1"></i>Admin
+                            </a>
+                        }
+
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -162,63 +174,92 @@
         </nav>
     </header>
 
+    <!-- ══ MESSAGES TEMPDATA ════════════════════════════════════ -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="container mt-3">
-            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 rounded-3" role="alert">
-                <i class="bi bi-check-circle-fill fs-5"></i>
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 animate-fadein"
+                 role="alert">
+                <i class="bi bi-check-circle-fill fs-5 flex-shrink-0"></i>
                 <div>@TempData["SuccessMessage"]</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Fermer"></button>
             </div>
         </div>
     }
     @if (TempData["InfoMessage"] != null)
     {
         <div class="container mt-3">
-            <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 rounded-3" role="alert">
-                <i class="bi bi-info-circle-fill fs-5"></i>
+            <div class="alert alert-info alert-dismissible fade show d-flex align-items-center gap-2 animate-fadein"
+                 role="alert">
+                <i class="bi bi-info-circle-fill fs-5 flex-shrink-0"></i>
                 <div>@TempData["InfoMessage"]</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        </div>
+    }
+    @if (TempData["WarningMessage"] != null)
+    {
+        <div class="container mt-3">
+            <div class="alert alert-warning alert-dismissible fade show d-flex align-items-center gap-2 animate-fadein"
+                 role="alert">
+                <i class="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0"></i>
+                <div>@TempData["WarningMessage"]</div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Fermer"></button>
             </div>
         </div>
     }
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="container mt-3">
-            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 rounded-3" role="alert">
-                <i class="bi bi-exclamation-circle-fill fs-5"></i>
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 animate-fadein"
+                 role="alert">
+                <i class="bi bi-x-circle-fill fs-5 flex-shrink-0"></i>
                 <div>@TempData["ErrorMessage"]</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Fermer"></button>
             </div>
         </div>
     }
 
+    <!-- ══ CONTENU PRINCIPAL ════════════════════════════════════ -->
     <div class="container flex-grow-1 my-4">
         <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="footer mt-auto py-4 bg-dark text-white-50 border-top border-secondary">
-        <div class="container text-center text-md-start">
-            <div class="row gy-3">
+    <!-- ══ FOOTER ═══════════════════════════════════════════════ -->
+    <footer class="footer-afro py-4 mt-auto">
+        <div class="container">
+            <div class="row align-items-center gy-2">
                 <div class="col-md-6">
-                    <h5 class="text-warning fw-bold"><i class="bi bi-globe-africa-west me-2"></i>AfroEvent</h5>
-                    <p class="small text-muted mb-0">La plateforme centralisée d'organisation, de billetterie et de gestion d'événements optimisée pour l'écosystème africain.</p>
+                    <a asp-controller="Home" asp-action="Index"
+                       class="text-decoration-none d-flex align-items-center gap-2">
+                        <i class="bi bi-ticket-perforated-fill text-warning"></i>
+                        <span class="fw-bold" style="color:#FFB703;">Afro<span style="color:rgba(255,255,255,0.7);">Event</span></span>
+                    </a>
+                    <p class="small mb-0 mt-1" style="color:rgba(255,255,255,0.4); max-width:400px;">
+                        La solution centralisée d'organisation, de billetterie et d'analyse d'événements pour l'Afrique.
+                    </p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <span class="small">&copy; @DateTime.Now.Year AfroEvent | Conçu avec excellence par <strong>AfroEvent-Team</strong></span>
+                    <span class="small" style="color:rgba(255,255,255,0.3);">
+                        &copy; @DateTime.Now.Year AfroEvent &nbsp;·&nbsp;
+                        Conçu avec excellence par <strong style="color:rgba(255,255,255,0.5);">AfroEvent-TEAM</strong>
+                    </span>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Core Scripts -->
+    <!-- ══ SCRIPTS ══════════════════════════════════════════════ -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js" integrity="sha512-ybGm3Xc1w9/8VbT7xndjN4Wn9p11G2P5x3B4/z7kHqP/9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"
+            integrity="sha512-ybGm3Xc1w9/8VbT7xndjN4Wn9p11G2P5x3B4/z7kHqP/9Q=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

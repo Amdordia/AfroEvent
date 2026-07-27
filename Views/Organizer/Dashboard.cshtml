@@ -30,9 +30,9 @@
                         <i class="bi bi-wallet2 fs-4"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold text-dark mb-1">@Model.TotalRevenueFcfa.ToString("N0") <span class="fs-6 text-muted font-normal">FCFA</span></h3>
-                <span class="badge bg-success bg-opacity-10 text-success small fw-medium">
-                    <i class="bi bi-arrow-up-right me-1"></i>+14.2% ce mois
+                <h3 class="fw-bold text-dark mb-1">@Model.TotalRevenueFcfa.ToString("N0") <span class="fs-6 text-muted fw-normal">FCFA</span></h3>
+                <span class="text-muted small">
+                    Cumul sur @Model.TotalEvents événements
                 </span>
             </div>
         </div>
@@ -194,23 +194,33 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Données réelles transmises par le service
+            const eventLabels = @Html.Raw(Json.Serialize(Model.EventLabels));
+            const eventRegData = @Html.Raw(Json.Serialize(Model.EventRegistrationData));
+            const eventRevData = @Html.Raw(Json.Serialize(Model.EventRevenueData));
+
+            const catLabels = @Html.Raw(Json.Serialize(Model.CategoryLabels));
+            const catData = @Html.Raw(Json.Serialize(Model.CategoryData));
+
             const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
             new Chart(ctxRevenue, {
                 type: 'bar',
                 data: {
-                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil'],
+                    labels: eventLabels.length > 0 ? eventLabels : ['Aucun événement'],
                     datasets: [
                         {
-                            label: 'Revenus (x10k FCFA)',
-                            data: [120, 190, 300, 250, 380, 420, 345],
-                            backgroundColor: 'rgba(255, 183, 3, 0.8)',
-                            borderRadius: 6
+                            label: 'Revenus (FCFA)',
+                            data: eventRevData.length > 0 ? eventRevData : [0],
+                            backgroundColor: 'rgba(255, 183, 3, 0.85)',
+                            borderRadius: 6,
+                            yAxisID: 'y'
                         },
                         {
                             label: 'Nombre d\'inscrits',
-                            data: [45, 60, 95, 80, 120, 140, 120],
-                            backgroundColor: 'rgba(18, 22, 37, 0.8)',
-                            borderRadius: 6
+                            data: eventRegData.length > 0 ? eventRegData : [0],
+                            backgroundColor: 'rgba(18, 22, 37, 0.85)',
+                            borderRadius: 6,
+                            yAxisID: 'y1'
                         }
                     ]
                 },
@@ -219,22 +229,40 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'Revenus (FCFA)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: 'Inscriptions' }
+                        }
                     }
                 }
             });
+
             const ctxCategory = document.getElementById('categoryChart').getContext('2d');
             new Chart(ctxCategory, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Hackathon', 'Bootcamp', 'Conférence', 'Workshop', 'Concert'],
+                    labels: catLabels.length > 0 ? catLabels : ['Aucune inscription'],
                     datasets: [{
-                        data: [35, 20, 25, 10, 10],
+                        data: catData.length > 0 ? catData : [1],
                         backgroundColor: [
                             '#ffb703',
                             '#f77f00',
                             '#d62828',
                             '#003049',
-                            '#6c757d'
+                            '#6c757d',
+                            '#2a9d8f',
+                            '#e76f51'
                         ]
                     }]
                 },

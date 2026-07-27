@@ -20,7 +20,8 @@ public class AdminDashboardViewModel
 
 public class OrganisateurItemViewModel
 {
-    public Guid Id { get; set; }
+    /// <summary>ID string Identity (IdentityUser.Id est string par défaut).</summary>
+    public string Id { get; set; } = string.Empty;
     public string NomComplet { get; set; } = string.Empty;
     public string NomOrganisation { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;

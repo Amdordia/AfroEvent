@@ -1,0 +1,95 @@
+@model IEnumerable<AfroEvent.Services.Interfaces.TicketResultViewModel>
+@{
+    ViewData["Title"] = "Mes Billets — AfroEvent";
+}
+
+<div class="container py-4">
+    <!-- En-tête page -->
+    <div class="d-flex align-items-center justify-content-between mb-5 flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold mb-1" style="font-size:1.65rem; color: var(--afro-dark);">
+                <i class="bi bi-ticket-perforated text-warning me-2"></i>Mes Billets
+            </h1>
+            <p class="text-muted mb-0 small">Retrouvez tous vos billets électroniques et présentez-les lors de l'accès aux événements.</p>
+        </div>
+        <a asp-controller="Events" asp-action="Index"
+           class="btn btn-afro-gold fw-bold px-4 py-2 rounded-3 shadow-sm">
+            <i class="bi bi-search me-2"></i>Découvrir d'autres événements
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var ticket in Model)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden"
+                         style="background:#ffffff;
+                                border:1px solid var(--afro-border) !important;
+                                transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                        
+                        <!-- Header de la carte de billet (effet ticket sombre) -->
+                        <div class="p-3 text-white position-relative"
+                             style="background:linear-gradient(135deg,#111622 0%,#1A2236 60%,#2C1508 100%);
+                                    border-bottom: 2px dashed var(--afro-border);">
+                            
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge px-2 py-1 rounded-pill small"
+                                      style="background:rgba(255,183,3,0.2);color:#FFB703;border:1px solid rgba(255,183,3,0.3);font-size:0.65rem;">
+                                    Pass @ticket.ParticipantPass
+                                </span>
+                                <span class="badge bg-success-soft rounded-pill px-2 py-1" style="font-size:0.65rem;">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Valide
+                                </span>
+                            </div>
+                            <h5 class="fw-bold text-truncate text-white mb-0" title="@ticket.EventName">@ticket.EventName</h5>
+                        </div>
+
+                        <!-- Corps de la carte (texte sombre lisible sur fond blanc) -->
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="small mb-2 text-secondary">
+                                <i class="bi bi-calendar-event text-warning me-2"></i>
+                                @ticket.EventDate.ToString("dd MMMM yyyy · HH:mm")
+                            </div>
+                            <div class="small mb-3 text-truncate text-secondary">
+                                <i class="bi bi-geo-alt text-danger me-2"></i>
+                                @ticket.EventLocation
+                            </div>
+                            <div class="small mb-4 text-muted">
+                                <i class="bi bi-upc-scan me-2"></i>
+                                N° <code class="text-dark bg-light px-2 py-1 rounded" style="font-size:0.8rem;">@ticket.TicketId.Substring(0, Math.Min(18, ticket.TicketId.Length))...</code>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="mt-auto d-flex gap-2">
+                                <a asp-controller="Participant" asp-action="BilletDetails" asp-route-id="@ticket.TicketId"
+                                   class="btn btn-sm btn-afro flex-grow-1 py-2 rounded-3 fw-semibold">
+                                    <i class="bi bi-qr-code me-1"></i>Voir QR Code
+                                </a>
+                                <a asp-controller="Participant" asp-action="DownloadTicket" asp-route-ticketId="@ticket.TicketId"
+                                   class="btn btn-sm btn-outline-secondary flex-grow-0 px-3 py-2 rounded-3"
+                                   title="Imprimer / Télécharger le billet" target="_blank">
+                                    <i class="bi bi-printer"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 rounded-4 mt-4"
+             style="background:#ffffff; border:1px dashed var(--afro-border);">
+            <i class="bi bi-ticket-detailed text-muted mb-3" style="font-size:4rem;"></i>
+            <h4 class="text-dark fw-bold mb-2">Aucun billet réservé</h4>
+            <p class="text-muted small mb-4">Vous n'avez pas encore de réservations en cours sur AfroEvent.</p>
+            <a asp-controller="Events" asp-action="Index"
+               class="btn btn-afro btn-lg px-4 py-2 rounded-3 fw-bold">
+                <i class="bi bi-calendar-event me-2"></i>Consulter les événements
+            </a>
+        </div>
+    }
+</div>

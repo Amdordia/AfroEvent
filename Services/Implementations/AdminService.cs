@@ -1,154 +1,154 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using AfroEvent.Data;
+using AfroEvent.Models;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
 
 namespace AfroEvent.Services.Implementations
 {
+    /// <summary>
+    /// Service d'administration. Toutes les données proviennent exclusivement de la base de données.
+    /// </summary>
     public class AdminService : IAdminService
     {
         private readonly AfroEventDbContext _context;
-        
-        private static readonly List<OrganisateurItemViewModel> _organisateurs = new()
-        {
-            new OrganisateurItemViewModel
-            {
-                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                NomComplet = "Amadou Diarra",
-                NomOrganisation = "Mali Tech Hub",
-                Email = "a.diarra@malitech.ml",
-                Telephone = "+223 76 12 34 56",
-                DateDemande = DateTime.Now.AddDays(-2),
-                Statut = "En attente"
-            },
-            new OrganisateurItemViewModel
-            {
-                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                NomComplet = "Fatoumata Coulibaly",
-                NomOrganisation = "Afro Festival Events",
-                Email = "contact@afrofestival.com",
-                Telephone = "+223 65 98 76 54",
-                DateDemande = DateTime.Now.AddDays(-1),
-                Statut = "En attente"
-            },
-            new OrganisateurItemViewModel
-            {
-                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                NomComplet = "Ibrahima Sissoko",
-                NomOrganisation = "Bamako Music Pro",
-                Email = "ibrahima@bamakomusic.com",
-                Telephone = "+223 70 00 11 22",
-                DateDemande = DateTime.Now.AddDays(-5),
-                Statut = "Approuvé"
-            },
-            new OrganisateurItemViewModel
-            {
-                Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                NomComplet = "Aïcha Traoré",
-                NomOrganisation = "Afro Innov",
-                Email = "aicha@innovsahel.org",
-                Telephone = "+223 90 44 55 66",
-                DateDemande = DateTime.Now.AddHours(-6),
-                Statut = "En attente"
-            }
-        };
+        private readonly UserManager<AppUser> _userManager;
 
-        private static readonly List<ActiviteRecenteViewModel> _activites = new()
-        {
-            new ActiviteRecenteViewModel { Description = "Inscriptions ouvertes pour 'Grand Nuit du Mandingue'", DateHeure = DateTime.Now.AddMinutes(-25), Type = "Événement", TypeBadgeClass = "bg-warning text-dark" },
-            new ActiviteRecenteViewModel { Description = "Nouvelle demande de compte organisateur : Innov'Sahel", DateHeure = DateTime.Now.AddHours(-2), Type = "Organisateur", TypeBadgeClass = "bg-dark text-warning" },
-            new ActiviteRecenteViewModel { Description = "Retrait simulé effectué : 1 200 000 FCFA par Mali Tech Hub", DateHeure = DateTime.Now.AddHours(-5), Type = "Finance", TypeBadgeClass = "bg-success text-white" },
-            new ActiviteRecenteViewModel { Description = "Alerte capacité atteinte (90%) : Concert CICB", DateHeure = DateTime.Now.AddDays(-1), Type = "Alerte", TypeBadgeClass = "bg-danger text-white" }
-        };
-
-        public AdminService(AfroEventDbContext context)
+        public AdminService(AfroEventDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public AdminDashboardViewModel GetDashboardData()
         {
-            lock (_organisateurs)
+            // --- Statistiques réelles depuis la BDD ---
+            var totalEvents    = _context.Events.Count();
+            var totalTickets   = _context.Tickets.Count();
+            var paidTickets    = _context.Tickets.Where(t => t.IsPaid).Include(t => t.Event).ToList();
+            var totalRevenue   = paidTickets.Sum(t => t.Event?.Price ?? 0);
+            var totalUsers     = _context.Users.Count();
+
+            // --- Organisateurs en attente (persistés en BDD) ---
+            var usersEnAttente = _context.Users
+                .Where(u => u.OrganizerStatus == OrganizerStatus.EnAttente)
+                .OrderBy(u => u.RegistrationDate)
+                .ToList();
+
+            var organisateursEnAttente = usersEnAttente.Select(u => new OrganisateurItemViewModel
             {
-                var enAttente = _organisateurs.Where(o => o.Statut == "En attente").ToList();
+                Id           = u.Id,
+                NomComplet   = u.FullName,
+                NomOrganisation = u.OrganizationName,
+                Email        = u.Email ?? string.Empty,
+                Telephone    = u.PhoneNumber ?? string.Empty,
+                DateDemande  = u.RegistrationDate,
+                Statut       = "En attente"
+            }).ToList();
 
-                var dbEventsCount = _context.Events.Count();
-                var dbTicketsCount = _context.Tickets.Count();
-                
-                // Calculate dynamic revenue
-                decimal totalRevenue = 0;
-                var paidTickets = _context.Tickets.Where(t => t.IsPaid).ToList();
-                foreach (var ticket in paidTickets)
-                {
-                    var ev = _context.Events.FirstOrDefault(e => e.Id == ticket.EventId);
-                    if (ev != null)
-                    {
-                        totalRevenue += ev.Price;
-                    }
-                }
+            // --- Activités récentes (tickets récents + approbations) ---
+            var recentTickets = _context.Tickets
+                .Include(t => t.Event)
+                .OrderByDescending(t => t.PurchaseDate)
+                .Take(5)
+                .ToList();
 
-                return new AdminDashboardViewModel
+            var activites = recentTickets.Select(t => new ActiviteRecenteViewModel
+            {
+                Description  = $"Billet émis pour \"{t.Event?.Title ?? "Événement"}\"",
+                DateHeure    = t.PurchaseDate,
+                Type         = "Billet",
+                TypeBadgeClass = "bg-info text-white"
+            }).ToList();
+
+            // Ajouter les organisateurs récemment approuvés
+            var recentApprouves = _context.Users
+                .Where(u => u.OrganizerStatus == OrganizerStatus.Approuve)
+                .OrderByDescending(u => u.RegistrationDate)
+                .Take(3)
+                .ToList();
+
+            foreach (var org in recentApprouves)
+            {
+                activites.Add(new ActiviteRecenteViewModel
                 {
-                    TotalOrganisateurs = _context.Users.Count() + 4, // Including mock ones
-                    TotalEvenements = dbEventsCount > 0 ? dbEventsCount : 124,
-                    TotalBilletsVendus = dbTicketsCount > 0 ? dbTicketsCount : 3450,
-                    TotalRevenusSimules = totalRevenue > 0 ? totalRevenue : 28750000m,
-                    OrganisateursEnAttenteCount = enAttente.Count,
-                    OrganisateursEnAttente = enAttente,
-                    ActivitesRecentes = _activites.ToList(),
-                    RevenusParCategorie = new List<RevenuParCategorieViewModel>
-                    {
-                        new RevenuParCategorieViewModel { Categorie = "Concerts & Spectacles", Montant = 14500000, NombreBillets = 1800, Pourcentage = 50.4 },
-                        new RevenuParCategorieViewModel { Categorie = "Hackathons & Tech", Montant = 6800000, NombreBillets = 650, Pourcentage = 23.6 },
-                        new RevenuParCategorieViewModel { Categorie = "Bootcamps & Formations", Montant = 5250000, NombreBillets = 320, Pourcentage = 18.3 },
-                        new RevenuParCategorieViewModel { Categorie = "Conférences & Forums", Montant = 2200000, NombreBillets = 680, Pourcentage = 7.7 }
-                    }
-                };
+                    Description  = $"Organisateur approuvé : {org.OrganizationName} ({org.FullName})",
+                    DateHeure    = org.RegistrationDate,
+                    Type         = "Organisateur",
+                    TypeBadgeClass = "bg-success text-white"
+                });
             }
+
+            activites = activites.OrderByDescending(a => a.DateHeure).Take(8).ToList();
+
+            // --- Revenus par catégorie ---
+            var revenusParCategorie = _context.Tickets
+                .Where(t => t.IsPaid)
+                .Include(t => t.Event)
+                    .ThenInclude(e => e!.Category)
+                .AsEnumerable()
+                .GroupBy(t => t.Event?.Category?.Name ?? "Autre")
+                .Select(g =>
+                {
+                    var montant = g.Sum(t => t.Event?.Price ?? 0);
+                    return new RevenuParCategorieViewModel
+                    {
+                        Categorie     = g.Key,
+                        Montant       = montant,
+                        NombreBillets = g.Count()
+                    };
+                })
+                .OrderByDescending(r => r.Montant)
+                .ToList();
+
+            // Calculer les pourcentages
+            var totalMontant = revenusParCategorie.Sum(r => r.Montant);
+            foreach (var r in revenusParCategorie)
+            {
+                r.Pourcentage = totalMontant > 0
+                    ? Math.Round((double)(r.Montant / totalMontant) * 100, 1)
+                    : 0;
+            }
+
+            return new AdminDashboardViewModel
+            {
+                TotalOrganisateurs         = totalUsers,
+                TotalEvenements            = totalEvents,
+                TotalBilletsVendus         = totalTickets,
+                TotalRevenusSimules        = totalRevenue,
+                OrganisateursEnAttenteCount = organisateursEnAttente.Count,
+                OrganisateursEnAttente     = organisateursEnAttente,
+                ActivitesRecentes          = activites,
+                RevenusParCategorie        = revenusParCategorie
+            };
         }
 
-        public bool ApproveOrganizer(Guid id)
+        public bool ApproveOrganizer(string userId)
         {
-            lock (_organisateurs)
-            {
-                var org = _organisateurs.FirstOrDefault(o => o.Id == id);
-                if (org != null)
-                {
-                    org.Statut = "Approuvé";
-                    _activites.Insert(0, new ActiviteRecenteViewModel
-                    {
-                        Description = $"Organisateur approuvé : {org.NomOrganisation} ({org.NomComplet})",
-                        DateHeure = DateTime.Now,
-                        Type = "Organisateur",
-                        TypeBadgeClass = "bg-success text-white"
-                    });
-                    return true;
-                }
-                return false;
-            }
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null) return false;
+
+            user.OrganizerStatus = OrganizerStatus.Approuve;
+            _context.SaveChanges();
+
+            // Ajouter au rôle Organisateur via UserManager (synchrone)
+            // Note : la mise à jour du rôle est idéalement faite en async dans le contrôleur
+            return true;
         }
 
-        public bool RejectOrganizer(Guid id)
+        public bool RejectOrganizer(string userId)
         {
-            lock (_organisateurs)
-            {
-                var org = _organisateurs.FirstOrDefault(o => o.Id == id);
-                if (org != null)
-                {
-                    org.Statut = "Rejeté";
-                    _activites.Insert(0, new ActiviteRecenteViewModel
-                    {
-                        Description = $"Demande d'organisateur rejetée : {org.NomOrganisation}",
-                        DateHeure = DateTime.Now,
-                        Type = "Organisateur",
-                        TypeBadgeClass = "bg-danger text-white"
-                    });
-                    return true;
-                }
-                return false;
-            }
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null) return false;
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

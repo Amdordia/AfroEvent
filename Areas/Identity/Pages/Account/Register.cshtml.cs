@@ -71,35 +71,32 @@ namespace AfroEvent.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Le nom complet est requis.")]
+            [Display(Name = "Nom complet")]
+            public string NomComplet { get; set; }
+
+            [Required(ErrorMessage = "L'adresse e-mail est requise.")]
+            [EmailAddress(ErrorMessage = "L'adresse e-mail n'est pas valide.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Le mot de passe est requis.")]
+            [StringLength(100, ErrorMessage = "Le {0} doit faire au moins {2} et au maximum {1} caractères.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Mot de passe")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmer le mot de passe")]
+            [Compare("Password", ErrorMessage = "Les mots de passe ne correspondent pas.")]
             public string ConfirmPassword { get; set; }
-        }
 
+            [Display(Name = "Je souhaite organiser des événements")]
+            public bool DemandeOrganisateur { get; set; }
+
+            [Display(Name = "Nom de l'organisation")]
+            public string NomOrganisation { get; set; }
+        }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -114,6 +111,21 @@ namespace AfroEvent.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
+                var nameParts = (Input.NomComplet ?? string.Empty).Split(' ', 2);
+                user.FirstName = nameParts[0];
+                user.LastName = nameParts.Length > 1 ? nameParts[1] : string.Empty;
+
+                if (Input.DemandeOrganisateur)
+                {
+                    user.OrganizerStatus = OrganizerStatus.EnAttente;
+                    user.OrganizationName = Input.NomOrganisation ?? string.Empty;
+                }
+                else
+                {
+                    user.OrganizerStatus = OrganizerStatus.NonApplicable;
+                    user.OrganizationName = string.Empty;
+                }
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -134,6 +146,13 @@ namespace AfroEvent.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    if (Input.DemandeOrganisateur)
+                    {
+                        // Si demande d'organisateur, on informe l'utilisateur qu'il doit attendre la validation de l'admin
+                        TempData["SuccessMessage"] = "Votre demande d'inscription en tant qu'organisateur a bien été soumise et est en cours de validation par un administrateur.";
+                        return RedirectToPage("Login");
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

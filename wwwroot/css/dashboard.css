@@ -1,145 +1,413 @@
-body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #f5f6f8;
-            color: #1e293b;
-        }
+/* ============================================================
+   AfroEvent — Dashboard CSS (Admin & Organisateur)
+   Sidebar layout fixe + contenu scrollable.
+   Dépend de site.css pour les variables et composants de base.
+   ============================================================ */
 
-        .admin-sidebar {
-            width: 280px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #111622;
-            color: #94a3b8;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
-        }
+/* ── Layout Principal ───────────────────────────────────────── */
+body.dashboard-body {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  background-color: #F1F5F9;
+  color: #1E293B;
+  margin: 0;
+  overflow-x: hidden;
+}
 
-        .sidebar-brand {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            background-color: #0d101b;
-        }
+/* ── Sidebar ────────────────────────────────────────────────── */
+.admin-sidebar {
+  width: 268px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #111622;
+  color: #94A3B8;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        .sidebar-menu {
-            padding: 1.5rem 1rem;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
+/* Sidebar Brand */
+.sidebar-brand {
+  padding: 1.4rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #0D101B;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 70px;
+}
 
-        .sidebar-menu .nav-link {
-            color: #94a3b8;
-            padding: 0.85rem 1.25rem;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.25s ease;
-            border: 1px solid transparent;
-        }
+.sidebar-brand-logo {
+  font-size: 1.35rem;
+  line-height: 1;
+}
 
-        .sidebar-menu .nav-link i.main-icon {
-            font-size: 1.2rem;
-            margin-right: 0.75rem;
-        }
+.sidebar-brand-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
 
-        .sidebar-menu .nav-link:hover {
-            color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.03);
-            transform: translateX(4px);
-        }
+.sidebar-brand-name span {
+  color: #FFB703;
+}
 
-        .sidebar-menu .nav-link.active {
-            color: #000000 !important;
-            background-color: #ffb800 !important;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(255, 184, 0, 0.25);
-        }
+/* Sidebar Menu */
+.sidebar-menu {
+  padding: 1.25rem 0.875rem;
+  flex-grow: 1;
+  overflow-y: auto;
+}
 
-        .sidebar-menu .nav-link.active i {
-            color: #000000 !important;
-        }
+.sidebar-section-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #475569;
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1.25rem;
+}
 
-        .sidebar-footer {
-            padding: 1.25rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            background-color: #0d101b;
-        }
+.sidebar-menu .nav-link {
+  color: #94A3B8;
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
+  margin-bottom: 0.2rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
 
-        .main-content {
-            margin-left: 280px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+.sidebar-menu .nav-link .nav-icon {
+  font-size: 1.1rem;
+  width: 1.2rem;
+  text-align: center;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
 
-        .content-header {
-            height: 70px;
-            background-color: #111622;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-        }
+.sidebar-menu .nav-link .nav-label { flex-grow: 1; }
 
-        .content-body {
-            padding: 2rem;
-            flex-grow: 1;
-        }
+.sidebar-menu .nav-link:hover {
+  color: #E2E8F0;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.04);
+  transform: translateX(3px);
+}
 
-        .tab-pane {
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+.sidebar-menu .nav-link.active {
+  color: #000 !important;
+  background: #FFB703 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(255, 183, 0, 0.28);
+  border-color: transparent;
+}
 
-        .btn-orange {
-            background-color: #f37021;
-            color: #ffffff;
-            font-weight: 500;
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.5rem;
-            border: none;
-            transition: all 0.2s ease;
-        }
-        .btn-orange:hover {
-            background-color: #d85c14;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(243, 112, 33, 0.25);
-        }
+.sidebar-menu .nav-link.active .nav-icon { opacity: 1; }
 
-        .btn-outline-orange {
-            border: 1px solid #f37021;
-            color: #f37021;
-            background: transparent;
-            font-weight: 500;
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-        }
-        .btn-outline-orange:hover {
-            background-color: #f37021;
-            color: white;
-        }
+.sidebar-nav-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2em 0.55em;
+  border-radius: 999px;
+  background: #EF4444;
+  color: #fff;
+  min-width: 20px;
+  text-align: center;
+}
 
-        .btn-dark-outline {
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #e2e8f0;
-            background: transparent;
-            font-weight: 500;
-            padding: 0.4rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-        }
-        .btn-dark-outline:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: white;
-        }
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #0D101B;
+}
+
+.sidebar-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFB703, #F37021);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-user-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #E2E8F0;
+  line-height: 1.2;
+}
+
+.sidebar-user-email {
+  font-size: 0.72rem;
+  color: #64748B;
+  line-height: 1.2;
+}
+
+.sidebar-logout-btn {
+  color: #64748B;
+  font-size: 0.8rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0;
+  transition: color 0.2s;
+  margin-top: 0.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.sidebar-logout-btn:hover { color: #EF4444; }
+
+/* ── Main Content ───────────────────────────────────────────── */
+.main-content {
+  margin-left: 268px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Header */
+.content-header {
+  height: 70px;
+  background-color: #111622;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 998;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.content-header-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+/* Content Body */
+.content-body {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+/* ── Tab Panels ─────────────────────────────────────────────── */
+.tab-pane {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Boutons Dashboard ──────────────────────────────────────── */
+.btn-orange {
+  background-color: #F37021;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.6rem;
+  border: none;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-orange:hover {
+  background-color: #D85C14;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(243, 112, 33, 0.28);
+  transform: translateY(-1px);
+}
+
+.btn-outline-orange {
+  border: 1.5px solid #F37021;
+  color: #F37021;
+  background: transparent;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-outline-orange:hover { background-color: #F37021; color: #fff; }
+
+.btn-dark-outline {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #CBD5E1;
+  background: transparent;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+  border-radius: 0.6rem;
+  font-size: 0.825rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-dark-outline:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+/* ── Cards Dashboard ────────────────────────────────────────── */
+.dash-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s ease;
+  border: none;
+  overflow: hidden;
+}
+.dash-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+
+.dash-card-header {
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dash-card-header h5,
+.dash-card-header h6 {
+  margin: 0;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+/* Stat Cards */
+.dash-stat {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  padding: 1.4rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+.dash-stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.09);
+}
+
+.dash-stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.dash-stat-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.dash-stat-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94A3B8;
+}
+
+.dash-stat-trend {
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* ── Timeline Activités ─────────────────────────────────────── */
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #F1F5F9;
+}
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 0.35rem;
+  flex-shrink: 0;
+}
+
+.activity-text {
+  font-size: 0.855rem;
+  color: #334155;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.activity-time {
+  font-size: 0.72rem;
+  color: #94A3B8;
+  margin-top: 0.2rem;
+}
+
+/* ── Mobile Responsive Sidebar ──────────────────────────────── */
+@media (max-width: 1024px) {
+  .admin-sidebar { transform: translateX(-100%); }
+  .admin-sidebar.sidebar-open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .content-body { padding: 1.25rem; }
+}
+
+/* ── Table dans Dashboard ───────────────────────────────────── */
+.dash-table thead th {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94A3B8;
+  padding: 0.85rem 1.25rem;
+  background: #F8FAFC;
+  border-bottom: 2px solid #E2E8F0;
+}
+.dash-table tbody td {
+  padding: 0.85rem 1.25rem;
+  vertical-align: middle;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #F1F5F9;
+}
+.dash-table tbody tr:hover { background: rgba(255,183,3,0.03); }

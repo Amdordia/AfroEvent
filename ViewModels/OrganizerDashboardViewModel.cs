@@ -5,14 +5,24 @@ namespace AfroEvent.ViewModels;
 
 public class OrganizerDashboardViewModel
 {
-    public string OrganizerName { get; set; } = "Organisateur ANNOORA";
-    public decimal TotalRevenueFcfa { get; set; } = 2850000;
-    public int TotalEvents { get; set; } = 6;
-    public int TotalRegistrations { get; set; } = 485;
-    public int TotalCheckIns { get; set; } = 398;
-    public double AveragePresenceRate => TotalRegistrations > 0 ? Math.Round((double)TotalCheckIns / TotalRegistrations * 100, 1) : 0;
+    public string OrganizerName { get; set; } = string.Empty;
+    public decimal TotalRevenueFcfa { get; set; }
+    public int TotalEvents { get; set; }
+    public int TotalRegistrations { get; set; }
+    public int TotalCheckIns { get; set; }
+    public double AveragePresenceRate => TotalRegistrations > 0
+        ? Math.Round((double)TotalCheckIns / TotalRegistrations * 100, 1)
+        : 0;
 
     public List<OrganizerEventSummaryViewModel> RecentEvents { get; set; } = new();
+
+    // Propriétés pour les graphiques dynamiques
+    public List<string> CategoryLabels { get; set; } = new();
+    public List<int> CategoryData { get; set; } = new();
+    
+    public List<string> EventLabels { get; set; } = new();
+    public List<int> EventRegistrationData { get; set; } = new();
+    public List<decimal> EventRevenueData { get; set; } = new();
 }
 
 public class OrganizerEventSummaryViewModel

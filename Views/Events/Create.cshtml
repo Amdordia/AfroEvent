@@ -3,43 +3,46 @@
     ViewData["Title"] = "Créer un Événement";
 }
 
-<div class="row justify-content-center">
-    <div class="col-12 col-lg-10">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <div>
-                <h2 class="fw-bold text-dark mb-1"><i class="bi bi-plus-circle-fill text-warning me-2"></i>Créer un Événement</h2>
-                <p class="text-muted mb-0">Renseignez les détails logistiques, la billetterie et le programme de votre événement.</p>
-            </div>
-            <a asp-controller="Organizer" asp-action="Dashboard" class="btn btn-outline-secondary">Annuler</a>
-        </div>
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+        <h1 class="fw-bold mb-1" style="font-size:1.65rem;">
+            <i class="bi bi-plus-circle-fill text-warning me-2"></i>Créer un événement
+        </h1>
+        <p class="text-muted mb-0 small">Renseignez les informations, la date, la billetterie et le programme de votre événement.</p>
+    </div>
+    <a asp-controller="Organizer" asp-action="Dashboard"
+       class="btn btn-outline-secondary rounded-3 fw-semibold">
+        <i class="bi bi-x-lg me-1"></i>Annuler
+    </a>
+</div>
 
-        <!-- Multi-Step Form Navigation Tabs -->
-        <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
-            <div class="card-body p-2">
-                <ul class="nav nav-pills nav-justified" id="createEventTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-semibold py-3" id="step1-tab" data-bs-toggle="pill" data-bs-target="#step1" type="button" role="tab">
-                            <span class="badge bg-dark me-2">1</span> Informations Générales
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-semibold py-3" id="step2-tab" data-bs-toggle="pill" data-bs-target="#step2" type="button" role="tab">
-                            <span class="badge bg-dark me-2">2</span> Date & Localisation
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-semibold py-3" id="step3-tab" data-bs-toggle="pill" data-bs-target="#step3" type="button" role="tab">
-                            <span class="badge bg-dark me-2">3</span> Billetterie & Capacité
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-semibold py-3" id="step4-tab" data-bs-toggle="pill" data-bs-target="#step4" type="button" role="tab">
-                            <span class="badge bg-dark me-2">4</span> Programme & Intervenants
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<!-- Indicateur d'étapes -->
+<div class="card border-0 shadow-sm rounded-4 mb-4" style="background:#fff;">
+    <div class="card-body p-2">
+        <ul class="nav nav-pills nav-justified" id="createEventTabs" role="tablist">
+            @foreach (var step in new[]
+            {
+                new { Id="step1", Label="Informations générales", Num="1" },
+                new { Id="step2", Label="Date & Lieu",              Num="2" },
+                new { Id="step3", Label="Billetterie",              Num="3" },
+                new { Id="step4", Label="Programme",                Num="4" },
+            })
+            {
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold py-3 @(step.Num == "1" ? "active" : "")"
+                            id="@step.Id-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#@step.Id"
+                            type="button" role="tab">
+                        <span class="badge me-2 @(step.Num == "1" ? "bg-warning text-dark" : "bg-light text-dark")"
+                              style="font-size:0.75rem;">@step.Num</span>
+                        <span class="d-none d-md-inline">@step.Label</span>
+                    </button>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
 
         <!-- Formulaire Multi-étapes -->
         <form asp-action="Create" method="post">

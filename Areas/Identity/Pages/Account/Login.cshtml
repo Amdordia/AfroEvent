@@ -1,83 +1,142 @@
-﻿@page
+@page
 @model LoginModel
-
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Connexion";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion — AfroEvent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body style="background:linear-gradient(135deg,#0D101B 0%,#111622 55%,#1C1209 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;">
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
+    <div style="width:100%;max-width:440px;">
+
+        <!-- Logo -->
+        <div class="text-center mb-5">
+            <a href="/" class="text-decoration-none">
+                <i class="bi bi-ticket-perforated-fill text-warning" style="font-size:2.5rem;"></i>
+                <div class="fw-bold mt-2" style="font-size:1.5rem;color:#fff;">
+                    Afro<span style="color:#FFB703;">Event</span>
+                </div>
+            </a>
+            <p class="text-white-50 small mt-2 mb-0">Votre espace professionnel d'événementiel</p>
+        </div>
+
+        <!-- Card connexion -->
+        <div class="rounded-4 p-4 p-md-5"
+             style="background:rgba(255,255,255,0.04);
+                    backdrop-filter:blur(12px);
+                    border:1px solid rgba(255,255,255,0.08);">
+
+            <h1 class="fw-bold text-white mb-1" style="font-size:1.5rem;">Bon retour 👋</h1>
+            <p class="text-white-50 small mb-4">Connectez-vous pour accéder à votre espace.</p>
+
             <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger py-2 small rounded-3 mb-3"
+                     role="alert" style="display:@(ViewData.ModelState.IsValid ? "none" : "block");">
                 </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label text-white-50 small fw-semibold">
+                        <i class="bi bi-envelope me-1"></i>Adresse e-mail
                     </label>
+                    <input asp-for="Input.Email"
+                           class="form-control rounded-3"
+                           style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#fff;"
+                           autocomplete="username"
+                           placeholder="vous@exemple.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
                 </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+
+                <!-- Mot de passe -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label asp-for="Input.Password" class="form-label text-white-50 small fw-semibold mb-0">
+                            <i class="bi bi-lock me-1"></i>Mot de passe
+                        </label>
+                        <a asp-page="./ForgotPassword"
+                           class="small text-decoration-none"
+                           style="color:#FFB703;">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+                    <input asp-for="Input.Password"
+                           class="form-control rounded-3"
+                           style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#fff;"
+                           autocomplete="current-password"
+                           placeholder="••••••••" />
+                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
                 </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
+
+                <!-- Se souvenir -->
+                <div class="mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="Input.RememberMe" />
+                        <label class="form-check-label text-white-50 small" asp-for="Input.RememberMe">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Bouton connexion -->
+                <div class="d-grid mb-4">
+                    <button id="login-submit" type="submit"
+                            class="btn btn-afro-gold btn-lg rounded-3 fw-bold py-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                    </button>
+                </div>
+
+                <!-- Créer un compte -->
+                <div class="text-center">
+                    <span class="text-white-50 small">Pas encore de compte ?</span>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                       class="fw-bold text-decoration-none ms-1"
+                       style="color:#FFB703;">
+                        Créer un compte
+                    </a>
                 </div>
             </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
+        </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+        <!-- Retour au site -->
+        <div class="text-center mt-4">
+            <a href="/" class="text-white-50 small text-decoration-none">
+                <i class="bi bi-arrow-left me-1"></i>Retour au site
+            </a>
+        </div>
+
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <style>
+        /* Focus pour les inputs sombres */
+        .form-control:focus {
+            background: rgba(255,255,255,0.09) !important;
+            border-color: #FFB703 !important;
+            color: #fff !important;
+            box-shadow: 0 0 0 3px rgba(255,183,3,0.18) !important;
+        }
+        .form-control::placeholder { color: rgba(255,255,255,0.25); }
+        .form-check-input { background-color: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+        .form-check-input:checked { background-color: #FFB703; border-color: #FFB703; }
+    </style>
+</body>
+</html>

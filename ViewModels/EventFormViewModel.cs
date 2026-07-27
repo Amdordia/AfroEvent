@@ -52,6 +52,9 @@ public class EventFormViewModel
 
     public string CategoryName { get; set; } = string.Empty;
 
+    /// <summary>ID de l'organisateur propriétaire de l'événement (clé Identity).</summary>
+    public string OrganizerId { get; set; } = string.Empty;
+
     public List<AgendaItemViewModel> AgendaItems { get; set; } = new();
     public List<SpeakerViewModel> Speakers { get; set; } = new();
 }
