@@ -54,10 +54,11 @@ builder.Services.AddScoped<AfroEvent.Services.Interfaces.IAdminService, AfroEven
 
 var app = builder.Build();
 
-// Seeding des rôles et du compte Admin
+// Seeding des rôles et du compte Admin ainsi que des autres données de test
 using (var scope = app.Services.CreateScope())
 {
     await AfroEvent.Data.DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
+    await AfroEvent.Data.DbOtherSeeder.SeedOtherDataAsync(scope.ServiceProvider);
 }
 
 // Configure the HTTP request pipeline.
