@@ -253,8 +253,8 @@ namespace AfroEvent.Services.Implementations
             margin-bottom: 10px;
         }}
         .qr-box svg {{
-            width: 220px;
-            height: 220px;
+            width: 150px;
+            height: 150px;
         }}
         .qr-text {{
             font-size: 0.75rem;
