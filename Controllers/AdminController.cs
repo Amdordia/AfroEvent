@@ -1,9 +1,11 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using AfroEvent.Services.Interfaces;
 
 namespace AfroEvent.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly IAdminService _adminService;

@@ -128,7 +128,7 @@ app.UseAuthorization();
 Dans le terminal, **à la racine du projet**, exécute :
 
 ```bash
-dotnet aspnet-codegenerator identity --dbContext AfroEvent.Data.AfroEventDbContext --files "Account.Register;Account.Login;Account.Logout" --userClass AfroEvent.Models.AppUser
+dotnet aspnet-codegenerator identity --dbContext AfroEvent.Data.AfroEventDbContext --files "Account.Register;Account.Login;Account.Logout"
 ```
 
 Cette commande génère automatiquement dans `Areas/Identity/Pages/Account/` :
