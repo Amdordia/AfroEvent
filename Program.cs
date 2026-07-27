@@ -32,6 +32,9 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AfroEventDbContext>()
 .AddDefaultTokenProviders();
 
+// Enregistrement du service d'envoi d'email factice pour Identity
+builder.Services.AddSingleton<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, DummyEmailSender>();
+
 builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -80,5 +83,13 @@ app.MapControllerRoute(
     .WithStaticAssets();
 app.MapRazorPages(); // Active le routing des pages Identity (Login, Register, Logout)
 
-
 app.Run();
+
+// Dummy EmailSender required by scaffolded ASP.NET Core Identity UI
+public class DummyEmailSender : Microsoft.AspNetCore.Identity.UI.Services.IEmailSender
+{
+    public Task SendEmailAsync(string email, string subject, string htmlMessage)
+    {
+        return Task.CompletedTask;
+    }
+}

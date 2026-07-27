@@ -94,56 +94,68 @@
                         <li class="nav-item">
                             <a class="nav-link text-light px-3" asp-controller="Events" asp-action="Index"><i class="bi bi-calendar-event me-1"></i>Événements</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-semibold px-3" asp-controller="Participant" asp-action="SInscrire"><i class="bi bi-person-plus me-1"></i>Inscription participant</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-bold px-3" asp-area="" asp-controller="Admin" asp-action="Dashboard">
-                                <i class="bi bi-shield-lock-fill me-1"></i> Dashboard Admin
-                            </a>
-                        </li>
+                        @if (!User.IsInRole("Admin") && !User.IsInRole("Organisateur"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-warning fw-semibold px-3" asp-controller="Participant" asp-action="SInscrire"><i class="bi bi-person-plus me-1"></i>Inscription participant</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-warning fw-bold px-3" asp-area="" asp-controller="Admin" asp-action="Dashboard">
+                                    <i class="bi bi-shield-lock-fill me-1"></i> Dashboard Admin
+                                </a>
+                            </li>
+                        }
                     </ul>
                     
                     <div class="d-flex align-items-center gap-3">
                         <!-- Cloche de Notifications Participant -->
-                        <div class="dropdown">
-                            <a class="nav-link position-relative text-light" href="#" id="notifToggle" role="button" onclick="toggleNotifications(event)">
-                                <i class="bi bi-bell-fill text-warning" style="font-size:1.2rem;"></i>
-                                <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;">0</span>
-                            </a>
-                            <div id="notifDropdown" class="dropdown-menu dropdown-menu-end p-3 shadow-lg" style="min-width:300px; display:none;">
-                                <h6 class="fw-bold border-bottom pb-2 mb-2"><i class="bi bi-bell me-2"></i>Notifications</h6>
-                                <div id="notifItems">
-                                    <div class="text-muted small">Aucune notification</div>
+                        @if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin"))
+                        {
+                            <div class="dropdown">
+                                <a class="nav-link position-relative text-light" href="#" id="notifToggle" role="button" onclick="toggleNotifications(event)">
+                                    <i class="bi bi-bell-fill text-warning" style="font-size:1.2rem;"></i>
+                                    <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;">0</span>
+                                </a>
+                                <div id="notifDropdown" class="dropdown-menu dropdown-menu-end p-3 shadow-lg" style="min-width:300px; display:none;">
+                                    <h6 class="fw-bold border-bottom pb-2 mb-2"><i class="bi bi-bell me-2"></i>Notifications</h6>
+                                    <div id="notifItems">
+                                        <div class="text-muted small">Aucune notification</div>
+                                    </div>
+                                    <div class="text-center mt-2 border-top pt-2"><a href="/Home/Index" class="small text-decoration-none text-primary">Voir toutes</a></div>
                                 </div>
-                                <div class="text-center mt-2 border-top pt-2"><a href="/Home/Index" class="small text-decoration-none text-primary">Voir toutes</a></div>
                             </div>
-                        </div>
+                        }
 
                         <!-- Navigation Espace Organisateur -->
-                        <div class="dropdown">
-                            <button class="btn btn-outline-warning dropdown-toggle fw-semibold" type="button" id="organizerMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-speedometer2 me-1"></i> Espace Organisateur
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="organizerMenu">
-                                <li>
-                                    <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Dashboard">
-                                        <i class="bi bi-grid-1x2-fill text-primary me-2"></i> Tableau de bord (Dashboard)
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Events">
-                                        <i class="bi bi-kanban-fill text-info me-2"></i> Gérer mes événements
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item py-2 fw-semibold text-success" asp-controller="Events" asp-action="Create">
-                                        <i class="bi bi-plus-circle-fill me-2"></i> + Créer un événement
-                                    </a>
-                                </li>
-                            </ul>
-                            <partial name="_LoginPartial" />
-                        </div>
+                        @if (User.IsInRole("Organisateur"))
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-outline-warning dropdown-toggle fw-semibold" type="button" id="organizerMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-speedometer2 me-1"></i> Espace Organisateur
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="organizerMenu">
+                                    <li>
+                                        <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Dashboard">
+                                            <i class="bi bi-grid-1x2-fill text-primary me-2"></i> Tableau de bord (Dashboard)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2 fw-semibold" asp-controller="Organizer" asp-action="Events">
+                                            <i class="bi bi-kanban-fill text-info me-2"></i> Gérer mes événements
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2 fw-semibold text-success" asp-controller="Events" asp-action="Create">
+                                            <i class="bi bi-plus-circle-fill me-2"></i> + Créer un événement
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        <partial name="_LoginPartial" />
                     </div>
                 </div>
             </div>

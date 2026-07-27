@@ -39,7 +39,7 @@
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         <div class="rounded-circle text-white fw-bold d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #111622; border: 2px solid #ffb800;">
-                                            @org.NomOrganisation.Substring(0, 1).ToUpper()
+                                            @(!string.IsNullOrEmpty(org.NomOrganisation) ? org.NomOrganisation.Substring(0, 1).ToUpper() : "O")
                                         </div>
                                         <div>
                                             <span class="fw-bold text-dark fs-6 d-block">@org.NomOrganisation</span>
