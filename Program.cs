@@ -6,8 +6,15 @@ using AfroEvent.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Augmenter la limite des headers pour éviter HTTP 431 en dev (accumulation cookies Identity)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestHeadersTotalSize = 131072; // 128 KB au lieu de 32 KB par défaut
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages(); // Requis pour les pages Identity scaffoldées (Areas/Identity)
 
 // Register EF Core DbContext
 builder.Services.AddDbContext<AfroEventDbContext>(options =>
@@ -71,6 +78,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+app.MapRazorPages(); // Active le routing des pages Identity (Login, Register, Logout)
 
 
 app.Run();
