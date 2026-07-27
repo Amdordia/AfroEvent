@@ -1,8 +1,11 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using AfroEvent.Services.Interfaces;
 
 namespace AfroEvent.Controllers;
+
+[Authorize(Roles = "Admin, Organisateur")]
 
 public class OrganizerController : Controller
 {

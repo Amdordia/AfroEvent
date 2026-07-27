@@ -8,7 +8,7 @@ namespace AfroEvent.Data
     /// Context principal d'Entity Framework Core pour AfroEvent.
     /// Hérite de IdentityDbContext pour intégrer ASP.NET Core Identity.
     /// </summary>
-    public class AfroEventDbContext : IdentityDbContext
+    public class AfroEventDbContext : IdentityDbContext<AppUser>
     {
         public AfroEventDbContext(DbContextOptions<AfroEventDbContext> options)
             : base(options)

@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using AfroEvent.Models;
 using AfroEvent.Data;
 using AfroEvent.Hubs;
 
@@ -10,6 +12,8 @@ builder.Services.AddControllersWithViews();
 // Register EF Core DbContext
 builder.Services.AddDbContext<AfroEventDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AfroEventDbContext>();
 
 builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
@@ -28,6 +32,24 @@ builder.Services.AddSingleton<AfroEvent.Services.Interfaces.IAdminService, AfroE
 
 var app = builder.Build();
 
+// Seeding des rôles et du compte Admin
+using (var scope = app.Services.CreateScope())
+{
+    await AfroEvent.Data.DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
+}
+
+// --- ASP.NET Core Identity ---
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<AfroEventDbContext>()
+.AddDefaultTokenProviders();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -40,6 +62,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
