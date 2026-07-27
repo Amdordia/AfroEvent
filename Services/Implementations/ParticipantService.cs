@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using AfroEvent.Data;
 using AfroEvent.Hubs;
+using AfroEvent.Models;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
 
@@ -11,16 +14,17 @@ namespace AfroEvent.Services.Implementations
 {
     public class ParticipantService : IParticipantService
     {
+        private readonly AfroEventDbContext _context;
         private readonly IHubContext<EventHub> _hubContext;
 
-        public ParticipantService(IHubContext<EventHub> hubContext)
+        public ParticipantService(AfroEventDbContext context, IHubContext<EventHub> hubContext)
         {
+            _context = context;
             _hubContext = hubContext;
         }
 
         public string ProcessRegistration(string eventName, ParticipantInscriptionViewModel model)
         {
-            // Business validation or registration storage logic
             return eventName ?? "Événement";
         }
 
@@ -28,6 +32,28 @@ namespace AfroEvent.Services.Implementations
         {
             var ticketId = $"TKT-{DateTime.UtcNow:yyyyMMddHHmmss}";
             var note = $"Paiement reçu pour {eventName} — Billet {ticketId}.";
+
+            // Find event in BDD by title
+            var ev = _context.Events.FirstOrDefault(e => e.Title == eventName);
+            var eventId = ev?.Id ?? Guid.Empty;
+
+            // Generate unique Hash
+            var qrHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(ticketId)));
+
+            // Create and persist Ticket record
+            var ticket = new TicketEntity
+            {
+                Id = Guid.NewGuid(),
+                QrCodeHash = qrHash,
+                IsPaid = true,
+                IsPresent = false,
+                PurchaseDate = DateTime.UtcNow,
+                EventId = eventId,
+                ParticipantId = participantEmail // Using email as identifier in mock mode
+            };
+
+            _context.Tickets.Add(ticket);
+            _context.SaveChanges();
 
             // Emit SignalR Realtime notification
             await _hubContext.Clients.All.SendCoreAsync("ReceiveNotification", new object[] { note });

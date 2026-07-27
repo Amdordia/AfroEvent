@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using AfroEvent.Data;
+using AfroEvent.Models;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
 
@@ -8,21 +11,32 @@ namespace AfroEvent.Services.Implementations
 {
     public class OrganizerService : IOrganizerService
     {
-        private readonly List<AttendeeViewModel> _attendees;
+        private readonly AfroEventDbContext _context;
 
-        public OrganizerService()
+        public OrganizerService(AfroEventDbContext context)
         {
-            _attendees = SeedMockAttendees();
+            _context = context;
         }
 
         public OrganizerDashboardViewModel GetDashboardData()
         {
             var recentEvents = GetOrganizerEvents();
+            
+            // Calculate actual total revenue from paid tickets
+            decimal totalRevenue = 0;
+            var paidTickets = _context.Tickets.Include(t => t.Event).Where(t => t.IsPaid).ToList();
+            foreach (var ticket in paidTickets)
+            {
+                if (ticket.Event != null)
+                {
+                    totalRevenue += ticket.Event.Price;
+                }
+            }
 
             return new OrganizerDashboardViewModel
             {
                 OrganizerName = "ANNOORA Tech Hub",
-                TotalRevenueFcfa = 3450000,
+                TotalRevenueFcfa = totalRevenue,
                 TotalEvents = recentEvents.Count,
                 TotalRegistrations = recentEvents.Sum(e => e.RegisteredCount),
                 TotalCheckIns = recentEvents.Sum(e => e.CheckedInCount),
@@ -32,152 +46,71 @@ namespace AfroEvent.Services.Implementations
 
         public List<OrganizerEventSummaryViewModel> GetOrganizerEvents()
         {
-            return new List<OrganizerEventSummaryViewModel>
+            var events = _context.Events
+                .Include(e => e.Category)
+                .ToList();
+
+            var tickets = _context.Tickets.ToList();
+
+            return events.Select(e => new OrganizerEventSummaryViewModel
             {
-                new OrganizerEventSummaryViewModel
-                {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    Title = "Hackathon Bamako 2026",
-                    CategoryName = "Hackathon",
-                    StartDate = DateTime.Now.AddDays(3),
-                    LocationAddress = "Centre International de Conférences de Bamako (CICB)",
-                    MaxCapacity = 200,
-                    RegisteredCount = 185,
-                    CheckedInCount = 160,
-                    TicketPrice = 10000,
-                    Status = "Publié"
-                },
-                new OrganizerEventSummaryViewModel
-                {
-                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                    Title = "Bootcamp Full-Stack ASP.NET Core",
-                    CategoryName = "Bootcamp",
-                    StartDate = DateTime.Now.AddDays(14),
-                    LocationAddress = "Espace Baïta Innovation Hub, Hamdallaye ACI 2000",
-                    MaxCapacity = 50,
-                    RegisteredCount = 48,
-                    CheckedInCount = 0,
-                    TicketPrice = 25000,
-                    Status = "Publié"
-                },
-                new OrganizerEventSummaryViewModel
-                {
-                    Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                    Title = "Forum de la Tech & IA en Afrique",
-                    CategoryName = "Conférence",
-                    StartDate = DateTime.Now.AddDays(30),
-                    LocationAddress = "Hôtel de l'Amitié, Bamako",
-                    MaxCapacity = 500,
-                    RegisteredCount = 310,
-                    CheckedInCount = 0,
-                    TicketPrice = 5000,
-                    Status = "Publié"
-                },
-                new OrganizerEventSummaryViewModel
-                {
-                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                    Title = "Atelier Design System & Diogner UI",
-                    CategoryName = "Workshop",
-                    StartDate = DateTime.Now.AddDays(-10),
-                    LocationAddress = "Salle de Conférence ANNOORA Studio",
-                    MaxCapacity = 40,
-                    RegisteredCount = 40,
-                    CheckedInCount = 38,
-                    TicketPrice = 0,
-                    Status = "Terminé"
-                },
-                new OrganizerEventSummaryViewModel
-                {
-                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
-                    Title = "Concert Afrobeats & Tech Night",
-                    CategoryName = "Concert",
-                    StartDate = DateTime.Now.AddDays(45),
-                    LocationAddress = "Palais de la Culture Amadou Hampâté Ba",
-                    MaxCapacity = 1000,
-                    RegisteredCount = 37,
-                    CheckedInCount = 0,
-                    TicketPrice = 15000,
-                    Status = "Brouillon"
-                }
-            };
+                Id = e.Id,
+                Title = e.Title,
+                CategoryName = e.Category?.Name ?? "Général",
+                StartDate = e.StartDate,
+                LocationAddress = e.LocationAddress,
+                MaxCapacity = e.MaxCapacity,
+                RegisteredCount = tickets.Count(t => t.EventId == e.Id),
+                CheckedInCount = tickets.Count(t => t.EventId == e.Id && t.IsPresent),
+                TicketPrice = e.Price,
+                Status = e.StartDate > DateTime.Now ? "Publié" : "Terminé"
+            }).ToList();
         }
 
         public List<AttendeeViewModel> GetAttendeesForEvent(Guid eventId)
         {
-            lock (_attendees)
+            var tickets = _context.Tickets
+                .Where(t => t.EventId == eventId)
+                .ToList();
+
+            // Retrieve corresponding users if possible, or build default views
+            var attendees = new List<AttendeeViewModel>();
+            foreach (var ticket in tickets)
             {
-                return _attendees.ToList();
+                // Retrieve participant details from AppUsers table if needed
+                var user = _context.Users.FirstOrDefault(u => u.Id == ticket.ParticipantId);
+                var fullName = user != null ? $"{user.UserName}" : "Participant";
+                var email = user != null ? user.Email ?? string.Empty : "email@afroevent.com";
+                var phone = user != null ? user.PhoneNumber ?? string.Empty : string.Empty;
+
+                attendees.Add(new AttendeeViewModel
+                {
+                    TicketId = ticket.Id,
+                    ParticipantName = fullName,
+                    Email = email,
+                    PhoneNumber = phone,
+                    RegistrationDate = ticket.PurchaseDate,
+                    IsPaid = ticket.IsPaid,
+                    IsPresent = ticket.IsPresent,
+                    ScanDate = ticket.ScanDate,
+                    QrCodeHash = ticket.QrCodeHash
+                });
             }
+
+            return attendees;
         }
 
         public bool CheckInAttendee(Guid ticketId)
         {
-            lock (_attendees)
+            var ticket = _context.Tickets.FirstOrDefault(t => t.Id == ticketId);
+            if (ticket != null && !ticket.IsPresent)
             {
-                var attendee = _attendees.FirstOrDefault(a => a.TicketId == ticketId);
-                if (attendee != null && !attendee.IsPresent)
-                {
-                    attendee.IsPresent = true;
-                    attendee.ScanDate = DateTime.Now;
-                    return true;
-                }
-                return false;
+                ticket.IsPresent = true;
+                ticket.ScanDate = DateTime.Now;
+                _context.SaveChanges();
+                return true;
             }
-        }
-
-        private static List<AttendeeViewModel> SeedMockAttendees()
-        {
-            return new List<AttendeeViewModel>
-            {
-                new AttendeeViewModel
-                {
-                    TicketId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                    ParticipantName = "Aminata Diallo",
-                    Email = "aminata.diallo@afroevent.com",
-                    PhoneNumber = "+223 76 12 34 56",
-                    RegistrationDate = DateTime.Now.AddDays(-5),
-                    IsPaid = true,
-                    IsPresent = true,
-                    ScanDate = DateTime.Now.AddHours(-2),
-                    QrCodeHash = "AFRO-TKT-89123-X"
-                },
-                new AttendeeViewModel
-                {
-                    TicketId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                    ParticipantName = "Moussa Traoré",
-                    Email = "moussa.traore@afroevent.com",
-                    PhoneNumber = "+223 65 98 76 54",
-                    RegistrationDate = DateTime.Now.AddDays(-4),
-                    IsPaid = true,
-                    IsPresent = false,
-                    ScanDate = null,
-                    QrCodeHash = "AFRO-TKT-44109-Y"
-                },
-                new AttendeeViewModel
-                {
-                    TicketId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                    ParticipantName = "Fanta Coulibaly",
-                    Email = "fanta.coulibaly@afroevent.com",
-                    PhoneNumber = "+223 90 11 22 33",
-                    RegistrationDate = DateTime.Now.AddDays(-3),
-                    IsPaid = true,
-                    IsPresent = true,
-                    ScanDate = DateTime.Now.AddHours(-1),
-                    QrCodeHash = "AFRO-TKT-99120-Z"
-                },
-                new AttendeeViewModel
-                {
-                    TicketId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                    ParticipantName = "Oumar Sissoko",
-                    Email = "oumar.sissoko@afroevent.com",
-                    PhoneNumber = "+223 70 88 99 00",
-                    RegistrationDate = DateTime.Now.AddDays(-1),
-                    IsPaid = false,
-                    IsPresent = false,
-                    ScanDate = null,
-                    QrCodeHash = "AFRO-TKT-12001-A"
-                }
-            };
+            return false;
         }
     }
 }

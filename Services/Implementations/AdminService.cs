@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AfroEvent.Data;
 using AfroEvent.Services.Interfaces;
 using AfroEvent.ViewModels;
 
@@ -8,6 +9,8 @@ namespace AfroEvent.Services.Implementations
 {
     public class AdminService : IAdminService
     {
+        private readonly AfroEventDbContext _context;
+        
         private static readonly List<OrganisateurItemViewModel> _organisateurs = new()
         {
             new OrganisateurItemViewModel
@@ -60,18 +63,38 @@ namespace AfroEvent.Services.Implementations
             new ActiviteRecenteViewModel { Description = "Alerte capacité atteinte (90%) : Concert CICB", DateHeure = DateTime.Now.AddDays(-1), Type = "Alerte", TypeBadgeClass = "bg-danger text-white" }
         };
 
+        public AdminService(AfroEventDbContext context)
+        {
+            _context = context;
+        }
+
         public AdminDashboardViewModel GetDashboardData()
         {
             lock (_organisateurs)
             {
                 var enAttente = _organisateurs.Where(o => o.Statut == "En attente").ToList();
 
+                var dbEventsCount = _context.Events.Count();
+                var dbTicketsCount = _context.Tickets.Count();
+                
+                // Calculate dynamic revenue
+                decimal totalRevenue = 0;
+                var paidTickets = _context.Tickets.Where(t => t.IsPaid).ToList();
+                foreach (var ticket in paidTickets)
+                {
+                    var ev = _context.Events.FirstOrDefault(e => e.Id == ticket.EventId);
+                    if (ev != null)
+                    {
+                        totalRevenue += ev.Price;
+                    }
+                }
+
                 return new AdminDashboardViewModel
                 {
-                    TotalOrganisateurs = 48,
-                    TotalEvenements = 124,
-                    TotalBilletsVendus = 3450,
-                    TotalRevenusSimules = 28750000,
+                    TotalOrganisateurs = _context.Users.Count() + 4, // Including mock ones
+                    TotalEvenements = dbEventsCount > 0 ? dbEventsCount : 124,
+                    TotalBilletsVendus = dbTicketsCount > 0 ? dbTicketsCount : 3450,
+                    TotalRevenusSimules = totalRevenue > 0 ? totalRevenue : 28750000m,
                     OrganisateursEnAttenteCount = enAttente.Count,
                     OrganisateursEnAttente = enAttente,
                     ActivitesRecentes = _activites.ToList(),
