@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AfroEvent.Data;
 using AfroEvent.Models;
 
-namespace AfroEvent.__useDefaultLayoutControllers
+namespace AfroEvent.Controllers
 {
     public class TicketsController : Controller
     {
