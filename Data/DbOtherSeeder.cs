@@ -16,6 +16,10 @@ namespace AfroEvent.Data
             var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
             var context = serviceProvider.GetRequiredService<AfroEventDbContext>();
 
+            context.Tickets.RemoveRange(context.Tickets);
+            context.Speakers.RemoveRange(context.Speakers);
+            context.Events.RemoveRange(context.Events);
+            await context.SaveChangesAsync();
 
             var organizers = new List<AppUser>();
             for (int i = 1; i <= 5; i++)
