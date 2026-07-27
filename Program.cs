@@ -13,7 +13,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AfroEventDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AfroEventDbContext>();
+// --- ASP.NET Core Identity ---
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<AfroEventDbContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddSignalR();
 builder.Services.AddDistributedMemoryCache();
@@ -37,18 +47,6 @@ using (var scope = app.Services.CreateScope())
 {
     await AfroEvent.Data.DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
-
-// --- ASP.NET Core Identity ---
-builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.SignIn.RequireConfirmedAccount = false;
-})
-.AddEntityFrameworkStores<AfroEventDbContext>()
-.AddDefaultTokenProviders();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
