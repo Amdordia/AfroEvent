@@ -19,6 +19,7 @@ namespace AfroEvent.Data
         public DbSet<EventEntity> Events { get; set; } = null!;
         public DbSet<SpeakerEntity> Speakers { get; set; } = null!;
         public DbSet<AgendaItemEntity> AgendaItems { get; set; } = null!;
+        public DbSet<TicketEntity> Tickets { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
