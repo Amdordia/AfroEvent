@@ -58,7 +58,6 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     await AfroEvent.Data.DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
-    await AfroEvent.Data.DbOtherSeeder.SeedOtherDataAsync(scope.ServiceProvider);
 }
 
 // Configure the HTTP request pipeline.

@@ -40,7 +40,7 @@ namespace AfroEvent.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("AgendaItems");
+                    b.ToTable("AgendaItems", (string)null);
                 });
 
             modelBuilder.Entity("AfroEvent.Models.AppUser", b =>
@@ -137,7 +137,7 @@ namespace AfroEvent.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -219,7 +219,7 @@ namespace AfroEvent.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("AfroEvent.Models.SpeakerEntity", b =>
@@ -251,7 +251,7 @@ namespace AfroEvent.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Speakers");
+                    b.ToTable("Speakers", (string)null);
                 });
 
             modelBuilder.Entity("AfroEvent.Models.TicketEntity", b =>
@@ -287,7 +287,7 @@ namespace AfroEvent.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
