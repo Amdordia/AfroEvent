@@ -179,19 +179,38 @@
                     <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
                         <h4 class="fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill text-info me-2"></i>Intervenants (Speakers)</h4>
                         
-                        <div id="speakers-container">
-                            <!-- Les intervenants dynamiques s'ajouteront ici -->
+                        <div class="border rounded-3 p-3 mb-3 bg-light">
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="Nom complet" value="Aminata Diallo">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" placeholder="Titre / Biographie rapide" value="Directrice de l'Innovation Tech">
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i> Retirer</button>
+                                </div>
+                            </div>
                         </div>
 
-                        <button type="button" id="btn-add-speaker" class="btn btn-sm btn-outline-primary mb-4"><i class="bi bi-plus-lg me-1"></i> Ajouter un intervenant</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary mb-4"><i class="bi bi-plus-lg me-1"></i> Ajouter un intervenant</button>
 
                         <h4 class="fw-bold text-dark mb-3"><i class="bi bi-calendar-event text-secondary me-2"></i>Programme (Agenda)</h4>
-                        
-                        <div id="sessions-container">
-                            <!-- Les sessions dynamiques s'ajouteront ici -->
+                        <div class="border rounded-3 p-3 mb-3 bg-light">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" placeholder="Titre de la session (ex: Accueil & Inscription)" value="Cérémonie d'Ouverture">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="time" class="form-control" value="09:00">
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i> Retirer</button>
+                                </div>
+                            </div>
                         </div>
 
-                        <button type="button" id="btn-add-session" class="btn btn-sm btn-outline-primary mb-4"><i class="bi bi-plus-lg me-1"></i> Ajouter une session au programme</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary mb-4"><i class="bi bi-plus-lg me-1"></i> Ajouter une session au programme</button>
 
                         <div class="d-flex justify-content-between mt-4">
                             <button type="button" class="btn btn-outline-secondary px-4" onclick="nextTab('#step3-tab')"><i class="bi bi-arrow-left me-1"></i> Précédent</button>
@@ -230,146 +249,6 @@
                 document.getElementById('latitudeInput').value = latlng.lat.toFixed(6);
                 document.getElementById('longitudeInput').value = latlng.lng.toFixed(6);
             });
-
-            // Gestion Dynamique des Intervenants (Speakers)
-            function addSpeakerRow(fullName = "", biography = "") {
-                const container = document.getElementById('speakers-container');
-                const row = document.createElement('div');
-                row.className = 'border rounded-3 p-3 mb-3 bg-light speaker-row animate__animated animate__fadeIn';
-                row.innerHTML = `
-                    <div class="row g-2 align-items-center">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control speaker-fullname" placeholder="Nom complet" value="${fullName}" required>
-                        </div>
-                        <div class="col-md-5">
-                            <input type="text" class="form-control speaker-biography" placeholder="Titre / Biographie rapide" value="${biography}" required>
-                        </div>
-                        <div class="col-md-3 text-end">
-                            <button type="button" class="btn btn-outline-danger w-100 btn-remove-speaker"><i class="bi bi-trash"></i> Retirer</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(row);
-
-                row.querySelector('.btn-remove-speaker').addEventListener('click', function () {
-                    row.classList.remove('animate__fadeIn');
-                    row.classList.add('animate__fadeOut');
-                    setTimeout(() => {
-                        row.remove();
-                        reindexSpeakers();
-                    }, 300);
-                });
-
-                reindexSpeakers();
-            }
-
-            function reindexSpeakers() {
-                const rows = document.querySelectorAll('.speaker-row');
-                rows.forEach((row, index) => {
-                    row.querySelector('.speaker-fullname').name = `Speakers[${index}].FullName`;
-                    row.querySelector('.speaker-biography').name = `Speakers[${index}].Biography`;
-                });
-            }
-
-            // Gestion Dynamique des Sessions (Agenda)
-            function addSessionRow(title = "", startTimeVal = "", endTimeVal = "") {
-                const container = document.getElementById('sessions-container');
-                const row = document.createElement('div');
-                row.className = 'border rounded-3 p-3 mb-3 bg-light session-row animate__animated animate__fadeIn';
-                row.innerHTML = `
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-5">
-                            <label class="form-label small fw-semibold text-muted mb-1">Titre de la session</label>
-                            <input type="text" class="form-control session-title" placeholder="ex: Cérémonie d'Ouverture" value="${title}" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-semibold text-muted mb-1">Heure de début</label>
-                            <input type="time" class="form-control session-starttime-input" value="${startTimeVal}" required>
-                            <input type="hidden" class="session-starttime-hidden">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-semibold text-muted mb-1">Heure de fin</label>
-                            <input type="time" class="form-control session-endtime-input" value="${endTimeVal}" required>
-                            <input type="hidden" class="session-endtime-hidden">
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-outline-danger w-100 btn-remove-session"><i class="bi bi-trash me-1"></i>Retirer</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(row);
-
-                row.querySelector('.btn-remove-session').addEventListener('click', function () {
-                    row.classList.remove('animate__fadeIn');
-                    row.classList.add('animate__fadeOut');
-                    setTimeout(() => {
-                        row.remove();
-                        reindexSessions();
-                    }, 300);
-                });
-
-                reindexSessions();
-                updateSessionDateTimes();
-            }
-
-            function reindexSessions() {
-                const rows = document.querySelectorAll('.session-row');
-                rows.forEach((row, index) => {
-                    row.querySelector('.session-title').name = `AgendaItems[${index}].Title`;
-                    row.querySelector('.session-starttime-hidden').name = `AgendaItems[${index}].StartTime`;
-                    row.querySelector('.session-endtime-hidden').name = `AgendaItems[${index}].EndTime`;
-                });
-            }
-
-            function updateSessionDateTimes() {
-                const startDateInput = document.querySelector('input[name="StartDate"]');
-                if (!startDateInput) return;
-                const startDateVal = startDateInput.value;
-                const datePart = startDateVal ? startDateVal.split('T')[0] : new Date().toISOString().split('T')[0];
-
-                const rows = document.querySelectorAll('.session-row');
-                rows.forEach((row) => {
-                    const timeStart = row.querySelector('.session-starttime-input').value || "09:00";
-                    const timeEnd = row.querySelector('.session-endtime-input').value || "10:00";
-
-                    row.querySelector('.session-starttime-hidden').value = `${datePart}T${timeStart}:00`;
-                    row.querySelector('.session-endtime-hidden').value = `${datePart}T${timeEnd}:00`;
-                });
-            }
-
-            // Boutons d'ajout
-            document.getElementById('btn-add-speaker').addEventListener('click', function () {
-                addSpeakerRow();
-            });
-
-            document.getElementById('btn-add-session').addEventListener('click', function () {
-                addSessionRow();
-            });
-
-            // Liaison de la date générale
-            const startDateInput = document.querySelector('input[name="StartDate"]');
-            if (startDateInput) {
-                startDateInput.addEventListener('change', updateSessionDateTimes);
-            }
-
-            // Délégation d'événements pour mettre à jour les dates sur changement d'heure
-            document.getElementById('sessions-container').addEventListener('change', function (e) {
-                if (e.target.classList.contains('session-starttime-input') || e.target.classList.contains('session-endtime-input')) {
-                    updateSessionDateTimes();
-                }
-            });
-
-            // Assurer la liaison finale avant la soumission
-            const form = document.querySelector('form');
-            if (form) {
-                form.addEventListener('submit', function (e) {
-                    updateSessionDateTimes();
-                });
-            }
-
-            // Ajouter un intervenant et une session par défaut si vide au chargement
-            addSpeakerRow("Aminata Diallo", "Directrice de l'Innovation Tech");
-            addSessionRow("Cérémonie d'Ouverture", "09:00", "10:00");
         });
     </script>
 }
